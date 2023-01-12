@@ -1,0 +1,220 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
+
+body {
+    padding: 0;
+    margin: 0;
+    height : 100vh;
+    width : 100vw;
+    background-image: url("./assets/curve4.svg");
+    background-size: cover;
+    
+    background-color: #17141d;
+    color: white;
+    font-family: 'DM Mono', monospace;
+}
+
+.login {
+  padding: 0;
+  margin: 0;
+  background-image: url("./assets/stacked.svg");
+  background-size: cover;
+
+  background-color: #17141d;
+  color: white;
+  font-family: 'DM Mono', monospace;
+}
+
+.login2 {
+  background-image: url("./assets/blob.svg");
+  background-size: cover;
+}
+
+.account {
+  padding: 0;
+  margin: 0;
+  /* background-image: url("./assets/peaks.svg");
+  background-size: cover; */
+
+  background-color: #17141d;
+  color: white;
+  font-family: 'DM Mono', monospace;
+}
+
+
+
+.wtf {
+  background-image: url("./assets/peaks.svg");
+  background-size: cover;
+}
+
+a {
+    text-decoration: none;
+}
+
+.card-list {
+    display: flex-column;
+    padding: 0.5rem;
+    padding-left : 1rem;
+   
+}
+
+.card-list::-webkit-scrollbar-track {
+    background: linear-gradient(90deg,#201c29,#201c29 1px,#17141d 0,#17141d);
+}
+
+.accountcard {
+  height: 225px;
+  width: 225px;
+  min-width: 250px;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: #17141d;
+  box-shadow: 0 0rem 3rem #000;
+
+
+  display: flex;
+  flex-direction: column;
+  transition: .2s;
+  margin: 0;
+  scroll-snap-align: start;
+  clear: both;
+  position: relative;
+}
+
+
+.card {
+    height: 225px;
+    width: 225px;
+    min-width: 250px;
+    padding: 1.5rem;
+    border-radius: 16px;
+    background: #17141d;
+    box-shadow: 0 0rem 3rem #000;
+
+
+    display: flex;
+    flex-direction: column;
+    transition: .2s;
+    margin: 0;
+    scroll-snap-align: start;
+    clear: both;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(2rem);
+}
+
+.card:hover {
+  transform: translateX(2rem);
+}
+
+
+.card-header h2 {
+    font-size: 20px;
+    margin: .25rem 0 auto;
+    text-decoration: none;
+    color: inherit;
+    border: 0;
+    display: inline-block;
+    cursor: pointer;
+
+}
+
+.heading h2:hover {
+    background: linear-gradient(90deg,#ff8a00,#e52e71);
+    text-shadow: none;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.card-author {
+    display: grid;
+    grid-template-columns: 75px 1fr;
+    align-items: center;
+    position: relative;
+}
+
+.author-avatar {
+    grid-area: auto;
+    align-self: start;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.author-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    filter: grayscale(100%);
+    display: block;
+    overflow: hidden;
+    margin: 16px 10px;
+}
+
+.author-name {
+    grid-area: auto;
+    box-sizing: border-box;
+}
+
+.author-name-prefix {
+    font-style: normal;
+    font-weight: 700;
+    color: #7a7a8c;
+}
+
+.half-circle {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 48px;
+    fill: none;
+    stroke: #ff8a00;
+    stroke-width: 8;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+.tags {
+    margin: 0.5rem 0 2rem;
+    padding: .5rem 0 1rem;
+    line-height: 2;
+    margin-bottom: 0;
+}
+
+.tags a {
+    font-style: normal;
+    font-weight: 700;
+    font-size: .5rem;
+    color: #7a7a8c;
+    text-transform: uppercase;
+    font-size: .66rem;
+    border: 3px solid #28242f;
+    border-radius: 2rem;
+    padding: .2rem .85rem .25rem;
+    position: relative;
+}
+
+.tags a:hover {
+    background: linear-gradient(90deg,#ff8a00,#e52e71);
+    text-shadow: none;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    background-clip: text;
+    border-color: white;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
