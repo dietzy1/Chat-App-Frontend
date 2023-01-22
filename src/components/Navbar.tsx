@@ -2,7 +2,7 @@ import { HomeIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
-import { ChatRoomType } from "../pages/testData";
+import { ChatroomType } from "../types/interfaces";
 import { useGlobalState } from "../context/context";
 
 const Navbar = ({
@@ -10,7 +10,7 @@ const Navbar = ({
   open,
   onClose,
 }: {
-  chatroom: ChatRoomType;
+  chatroom: ChatroomType;
   open: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -38,10 +38,11 @@ const Navbar = ({
 
   return (
     <div>
-      <nav className="text-white flex flex-row h-16 w-full bg-blacky fixed top-0 justify-items-stretch z-30  shadow-lg">
+      <nav className="text-white flex flex-row h-20 w-full bg-blacky fixed top-0 justify-items-stretch z-30  shadow-lg">
         {/*  <div className="flex flex-row justify-center "> */}
-        <div className="w-[20%] flex flex-row justify-start">
-          <div className="flex flex-row px-16">
+        <div className="sm:w-[30rem] w-0 flex flex-row">
+          <div className="w-28"></div>
+          <div className="flex flex-row">
             <img src="src/assets/fire.png" className="" />
             <div className="whitespace-nowrap my-auto text-xl">Dev Chat</div>
           </div>
@@ -58,8 +59,8 @@ const Navbar = ({
           </div>
         </div>
 
-        <div className="w-[50%] flex flex-row justify-center">
-          <div className="my-auto text-xl underline underline-offset-4">
+        <div className="w-full flex flex-row justify-center">
+          <div className="my-auto text-xl mx-auto underline underline-offset-4">
             {"# " + chatroom.name}
           </div>
 
@@ -76,7 +77,7 @@ const Navbar = ({
           {/*     </div> */}
         </div>
 
-        <div className="w-[30%] flex flex-row justify-end px-6">
+        <div className="w-0 flex flex-row justify-end px-6">
           <div className="my-auto relative justify-center flex group">
             <UserCircleIcon
               onClick={closeFunc}

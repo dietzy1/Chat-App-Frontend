@@ -1,5 +1,7 @@
 import React from "react";
 
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+
 import { useState } from "react";
 
 //@ts-ignore
@@ -33,19 +35,15 @@ const Searchbar = () => {
   return (
     <div>
       <footer className="fixed bottom-0 left-0 right-0 z-10 text-darky flex flex-row justify-center mx-auto w-full">
-        <div className="sm:w-[57.5%] w-full flex flex-row justify-center border-gray-500">
-          <div className="rounded-lg sm:w-[60%] w-[80%]">
-            <InputEmoji
-              value={text}
-              onChange={setText}
-              cleanOnEnter
-              onEnter={onSubmit}
-              placeholder="Aa"
-              theme="dark"
-              borderColor="#17141d"
-              className="bg-black"
-            />
-          </div>
+        <div className="bg-customgray w-[50%] h-14 m-6 border rounded-xl flex items-center border-gray-500">
+          <input
+            /* onChange={(e) => setQuery(e.target.value)} */
+            className="appearance-none bg-transparent border-none w-full text-white leading-tight focus:outline-none rounded-md text-sm mx-6"
+            type="text"
+            placeholder="Aa"
+          />
+
+          <PaperAirplaneIcon className="w-8 h-8 mx-6" />
         </div>
       </footer>
     </div>
@@ -53,3 +51,22 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
+
+{
+  /*   <footer className="fixed bottom-0 left-0 right-0 z-10 text-darky flex flex-row justify-center mx-auto w-full">
+  <div className="sm:w-[57.5%] w-full flex flex-row justify-center border-gray-500">
+    <div className="rounded-lg sm:w-[60%] w-[80%]">
+      <InputEmoji
+        value={text}
+        onChange={setText}
+        cleanOnEnter
+        onEnter={onSubmit}
+        placeholder="Aa"
+        theme="dark"
+        borderColor="#17141d"
+        className="bg-red-500"
+      />
+    </div>
+  </div>
+</footer> */
+}

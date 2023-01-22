@@ -15,9 +15,14 @@ export interface UserType {
 }
 
 export interface ChatroomType {
+  users: string[];
+  tags: string[];
   name: string;
   icon: string;
   uuid: string;
+  owner: string;
+  description: string;
+  channels: ChannelType[];
 }
 
 export interface LoginError {
@@ -34,4 +39,9 @@ interface User {
   Roles: string[];
   ChatServers: string[];
   Reports: number;
+}
+
+export interface ChannelType {
+  uuid: string;
+  name: string;
 }

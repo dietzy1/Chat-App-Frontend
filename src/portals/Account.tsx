@@ -1,5 +1,6 @@
 import React from "react";
 import { createPortal } from "react-dom";
+import { ChangeEvent, useState } from "react";
 
 //Should be able to change profile picture, username, password, and delete accounts
 
@@ -12,6 +13,21 @@ const Account = ({
 }) => {
   const closeFunc = () => {
     onClose(false);
+  };
+
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadClick = () => {
+    if (!file) {
+      return;
+    }
+    /*   ChangeAvatar(file, "uuid"); */
   };
 
   if (!open) return null;
@@ -82,6 +98,10 @@ const Account = ({
             <div className="border mt-8 rounded-lg w-40 ml-auto my-auto px-4 p-2 m-2 text-white">
               Save changes
             </div>
+            <div>
+              {/*  <input type="file" onChange={} />
+              <button onClick={}>Upload!</button> */}
+            </div>
           </div>
         </div>
       </div>
@@ -92,8 +112,65 @@ const Account = ({
 
 export default Account;
 
-/* box-shadow: 0 0rem 3rem #000;
+async function ChangeName(newUsername: string, uuid: string) {
+  // convert to json
+  const data = JSON.stringify({ newUsername, uuid });
 
-shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] */
+  //! is used to tell typescript that the variable is not null even though it might be null incase the env file is not found
+  const res = await fetch(process.env.REACT_APP_CHANGENAME!, {
+    method: "POST",
+    body: data,
+    credentials: "include",
+  });
+  if (!res.ok) {
+    return Promise.resolve(false);
+  }
+  return Promise.resolve(true);
+}
 
-//async fetch function
+async function ChangePassword(newPassword: string, uuid: string) {
+  // convert to json
+  const data = JSON.stringify({ newPassword, uuid });
+
+  //! is used to tell typescript that the variable is not null even though it might be null incase the env file is not found
+  const res = await fetch(process.env.REACT_APP_CHANGEPASSWORD!, {
+    method: "POST",
+    body: data,
+    credentials: "include",
+  });
+  if (!res.ok) {
+    return Promise.resolve(false);
+  }
+  return Promise.resolve(true);
+}
+
+async function ChangeAvatar(uuid: string) {
+  // convert to json
+  const data = JSON.stringify({ uuid });
+
+  //accept image file
+  const file = document.getElementById("file") as HTMLInputElement;
+  const fileData = file.files![0];
+
+  //! is used to tell typescript that the variable is not null even though it might be null incase the env file is not found
+  const res = await fetch(process.env.REACT_APP_CHANGEAVATAR!, {
+    method: "POST",
+    body: fileData + data,
+    credentials: "include",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  const res1 = await fetch(process.env.REACT_APP_CHANGEAVATAR!, {
+    method: "POST",
+    body: data,
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    return Promise.resolve(false);
+  }
+}
+
+//I want to send 2 seperate requests

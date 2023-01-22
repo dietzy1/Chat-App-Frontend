@@ -9,6 +9,8 @@ module.exports = {
         customOrange: "#ff8a00",
         customPink: "#B03463",
         textGray: "#7a7a8c",
+        bggray: "#1D2127",
+        test: "#1c1921",
       },
     },
   },

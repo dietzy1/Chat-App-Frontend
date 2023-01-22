@@ -4,7 +4,7 @@ const Online = ({ props }: { props: UserType }) => {
   return (
     <div>
       {props.online ? (
-        <div className=" w-full break-all ml-4">
+        <div className="max-w-xs ml-auto break-all w-64">
           <div className="flex flex-row items-center hover:bg-gray-100  rounded-3xl mb-2">
             <div className="m-2 relative">
               <img
@@ -30,7 +30,7 @@ export const Offline = ({ props }: { props: UserType }) => {
   return (
     <div>
       {!props.online ? (
-        <div className=" w-full break-all ml-4 ">
+        <div className="max-w-xs break-all ml-auto w-64">
           <div className="flex flex-row items-center hover:bg-gray-100 rounded-3xl mb-2">
             <div className="m-2 relative">
               <img
