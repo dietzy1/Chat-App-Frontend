@@ -24,7 +24,7 @@ export default Chatroom;
 export const CreateChatroom = () => {
   return (
     <div className="m-2 flex justify-center">
-      <PlusIcon className="w-16 h-16 rounded-full bg-customgray" />
+      <PlusIcon className="w-16 h-16 rounded-full bg-customgray text-customOrange" />
     </div>
   );
 };

@@ -34,8 +34,8 @@ const Searchbar = () => {
 
   return (
     <div>
-      <footer className="fixed bottom-0 left-0 right-0 z-10 text-darky flex flex-row justify-center mx-auto w-full">
-        <div className="bg-customgray w-[50%] h-14 m-6 border rounded-xl flex items-center border-gray-500">
+      <footer className="fixed bottom-0 left-10 right-10  z-10 text-darky flex flex-row justify-center mx-auto w-full">
+        <div className="bg-customgray w-[50vw] h-14 m-2 border rounded-xl flex items-center border-gray-500">
           <input
             /* onChange={(e) => setQuery(e.target.value)} */
             className="appearance-none bg-transparent border-none w-full text-white leading-tight focus:outline-none rounded-md text-sm mx-6"

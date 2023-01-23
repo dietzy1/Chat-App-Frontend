@@ -81,8 +81,6 @@ export const testArrayChannel: ChannelType[] = [
   testChannel,
   testChannel,
   testChannel,
-  testChannel,
-  testChannel,
 ];
 
 export const testChatRoom: ChatroomType = {

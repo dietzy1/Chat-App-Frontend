@@ -60,9 +60,7 @@ const Navbar = ({
         </div>
 
         <div className="w-full flex flex-row justify-center">
-          <div className="my-auto text-xl mx-auto underline underline-offset-4">
-            {"# " + chatroom.name}
-          </div>
+          <div className="my-auto text-3xl mx-auto  bold">{chatroom.name}</div>
 
           {/*  <div className="sm:hidden flex"> */}
           {/*    <Hamburger
@@ -76,8 +74,9 @@ const Navbar = ({
     /> */}
           {/*     </div> */}
         </div>
+        <div className="sm:w-[30rem] w-0 flex flex-row" />
 
-        <div className="w-0 flex flex-row justify-end px-6">
+        {/*  <div className="w-0 flex flex-row justify-end px-6">
           <div className="my-auto relative justify-center flex group">
             <UserCircleIcon
               onClick={closeFunc}
@@ -97,7 +96,7 @@ const Navbar = ({
               Logout
             </span>
           </div>
-        </div>
+        </div> */}
       </nav>
     </div>
   );
