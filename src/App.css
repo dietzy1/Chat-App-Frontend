@@ -44,13 +44,11 @@ body {
 
 
 .wtf {
-  background-image: url("./assets/peaks.svg");
-  background-size: cover;
+  background-image: url("./assets/123.svg");
+  background-size: 50vmax;
 }
 
-a {
-    text-decoration: none;
-}
+
 
 .card-list {
     display: flex-column;
