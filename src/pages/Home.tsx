@@ -1,14 +1,14 @@
 import React from "react";
 import "../App.css";
-import Card from "../components/Card";
-import Chat from "../components/Chat";
-import Searchbar from "../components/Searchbar";
 import { useGlobalState } from "../context/context";
 import { Navigate } from "react-router-dom";
+
+//ICONS
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 
+//TEST DATA
 import {
   testArrayMessage,
   testArrayUser,
@@ -18,12 +18,22 @@ import {
   testArrayChannel,
 } from "./testData";
 
+//COMPONENTS
 import Online, { Offline } from "../components/Online";
 import Navbar from "../components/Navbar";
-import Account from "../portals/Account";
-import Chatroom, { CreateChatroom } from "../components/Chatroom";
-import Channel from "../components/Channel";
 import User from "../components/User";
+import Channel from "../components/Channel";
+import Chatroom, { CreateChatroom } from "../components/Chatroom";
+import Chat from "../components/Chat";
+import Searchbar from "../components/Searchbar";
+
+//PORTALS
+import { openAccountFunc, openSettingsFunc } from "../portals/Openportals";
+import Account from "../portals/Account";
+import Settings from "../portals/Settings";
+
+//API
+import { Logoutfunc } from "../api/Auth";
 
 //I need to make it so that every channel has a unique id which is the url path
 //once every chatroom is attached to a url i can open and close websocket connections to each chatroom based on the user viewing the url
@@ -31,6 +41,10 @@ import User from "../components/User";
 const Home = () => {
   const [state, dispatch] = useGlobalState();
   const [open, setOpen] = React.useState(false);
+
+  //Portals
+  const [openAccount, setOpenAccount] = React.useState(false);
+  const [openSettings, setOpenSettings] = React.useState(false);
 
   if (!state.user) {
     return <Navigate to="/login" replace />;
@@ -100,41 +114,27 @@ const Home = () => {
         <div className="h-[8vh]">
           <div className=" px-8 py-4 border-t flex flex-row justify-around">
             <UserCircleIcon
-              className="w-10 h-10 opacity-80"
-              onClick={() => setOpen(true)}
+              className="w-10 h-10 opacity-80 z-[11]"
+              onClick={() => openAccountFunc(setOpenAccount, setOpenSettings)}
             />
-            <Cog8ToothIcon className="w-10 h-10 opacity-80" />
-            <ArrowLeftOnRectangleIcon className="w-10 h-10 opacity-80 " />
+            <Cog8ToothIcon
+              onClick={() => openSettingsFunc(setOpenAccount, setOpenSettings)}
+              className="w-10 h-10 opacity-80 z-[11]"
+            />
+            <ArrowLeftOnRectangleIcon
+              className="w-10 h-10 opacity-80 z-[11]"
+              /*  TODO:I need to implement the logout function here */
+              onClick={() => Logoutfunc(dispatch)}
+            />
           </div>
         </div>
       </div>
 
-      {/*  <Searchbar /> */}
       <Searchbar />
-      <Account open={open} onClose={() => setOpen(false)} />
+      {/*REACT PORTALS */}
+      <Account open={openAccount} onClose={() => setOpen(false)} />
+      <Settings open={openSettings} onClose={() => setOpen(false)} />
     </div>
   );
 };
-
-/* function open1(setOpen: any) {
-  console.log("im getting called XD");
-  setOpen(false);
-} */
-
 export default Home;
-
-const Logoutfunc = async (e: any) => {
-  e.preventDefault();
-  try {
-    const res = await fetch("http://localhost:3000/api/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-  } catch (error) {
-    throw error;
-  } finally {
-    dispatch({ user: false });
-    console.log(state.user);
-  }
-  console.log(state.user);
-};
