@@ -1,7 +1,8 @@
 import React from "react";
 import "../App.css";
-import { useGlobalState } from "../context/context";
+import { defaultGlobalStateType, useGlobalState } from "../context/context";
 import { Navigate } from "react-router-dom";
+import { useState } from "react";
 
 //ICONS
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
@@ -33,7 +34,8 @@ import Account from "../portals/Account";
 import Settings from "../portals/Settings";
 
 //API
-import { Logoutfunc } from "../api/Auth";
+import { LogoutFunc } from "../api/Auth";
+import { OpenWSConn } from "../websocket/websocket";
 
 //I need to make it so that every channel has a unique id which is the url path
 //once every chatroom is attached to a url i can open and close websocket connections to each chatroom based on the user viewing the url
@@ -41,6 +43,13 @@ import { Logoutfunc } from "../api/Auth";
 const Home = () => {
   const [state, dispatch] = useGlobalState();
   const [open, setOpen] = React.useState(false);
+
+  //Websocket
+  const [ws, setWs] = React.useState<WebSocket | null>(null);
+
+  //Chatroom and channel IDS
+  const [chatroom, setChatroom] = useState("");
+  const [channel, setChannel] = useState("");
 
   //Portals
   const [openAccount, setOpenAccount] = React.useState(false);
@@ -63,7 +72,8 @@ const Home = () => {
                 <Chatroom chatroom={chatroom} />
               ))}
           </div>
-
+          {/*   @ts-ignore */}
+          <OpenWSConn stateYep={state} />
           <div className="h-[7vh] flex border-gray-900 drop-shadow-2xl mx-auto">
             {/* <ArrowLeftOnRectangleIcon className="text-white w-10 h-10 my-auto mx-auto" /> */}
 
@@ -84,7 +94,7 @@ const Home = () => {
       </div>
 
       <div
-        className={` sm:w-full w-full flex justify-center overflow-x-hidden border-gray-500 h-[96vh] overflow-y-scroll scrollbar-hide`}
+        className={` sm:w-full w-full flex justify-center overflow-x-hidden border-gray-500 h-[96vh] overflow-y-scroll scrollbar-hide `}
       >
         {/*TODO:*/}
         <div className="sm:mb-10 sm:mt-24 mt-16 mb-10 sm:px-20 scrollbar-hide overflow-x-hidden max-w-[100%]">
@@ -100,7 +110,7 @@ const Home = () => {
             <span className=" max-w-xs ml-auto w-64">{"Online - 5"}</span>
           </span>
 
-          <div className="w-[100%]">
+          <div className="w-[100%] ">
             {testArrayUser &&
               testArrayUser.map((test) => <Online props={test} />)}
 
@@ -124,7 +134,7 @@ const Home = () => {
             <ArrowLeftOnRectangleIcon
               className="w-10 h-10 opacity-80 z-[11]"
               /*  TODO:I need to implement the logout function here */
-              onClick={() => Logoutfunc(dispatch)}
+              onClick={() => LogoutFunc(dispatch)}
             />
           </div>
         </div>

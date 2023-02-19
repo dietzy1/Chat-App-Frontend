@@ -3,7 +3,8 @@ import { MessageType, UserType } from "../types/interfaces";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
 const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
   const [query, setQuery] = useState("");
@@ -34,6 +35,39 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
     setEditing(!editing);
     console.log("editing: " + editing);
   };
+
+  //Websocket logic
+  const [socketUrl, setSocketUrl] = useState(
+    "ws://localhost:8000/ws?" + channel + "&" + chatroom
+  );
+  const [messageHistory, setMessageHistory] = useState([]) as any;
+
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+  //Start listening for new messages
+  useEffect(() => {
+    if (lastMessage !== null) {
+      setMessageHistory((prev: any) => prev.concat(lastMessage));
+    }
+  }, [lastMessage, setMessageHistory]);
+
+  //If a new channel is selected this function should be called
+  const handleClickChangeSocketUrl = useCallback(
+    () => setSocketUrl("ws://localhost:8000/ws?" + channel + "&" + chatroom),
+    []
+  );
+
+  //Send a message to the server
+  //Needs to be a protobuf message
+  const handleClickSendMessage = useCallback(() => sendMessage("Hello"), []);
+
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: "Connecting",
+    [ReadyState.OPEN]: "Open",
+    [ReadyState.CLOSING]: "Closing",
+    [ReadyState.CLOSED]: "Closed",
+    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
+  }[readyState];
 
   return (
     <div className="mb-10 text-lg">

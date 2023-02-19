@@ -7,7 +7,7 @@ import React from "react";
 
 const Channel = ({ channels }: { channels: ChannelType[] }) => {
   return (
-    <div className="">
+    <div className="shadow-inner">
       <div className="border-b">
         <div className="ml-6 mt-6 mb-4 text-xl ">BOBS CHATSERVER</div>
       </div>

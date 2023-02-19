@@ -1,10 +1,10 @@
 export interface MessageType {
   author: string;
-  message: string;
-  /* icon: string; */
-  timestamp: string;
-  /*   uuid: string; */
+  content: string;
   authoruuid: string;
+  chatroomuuid: string;
+  channeluuid: string;
+  timestamp: string;
 }
 
 export interface UserType {

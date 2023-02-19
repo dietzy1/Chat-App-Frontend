@@ -7,22 +7,26 @@ import {
 
 const testMessage: MessageType = {
   author: "Bob",
-  message:
+  content:
     "Det her er en test tekst besked, som er skrevet af en test bruger, som hedder Bob Det her er en test tekst besked, som er skrevet af en test bruger, som hedder Bob",
   /*  icon: testIcon, */
   timestamp: "16:40",
   /* uuid: "123", */
   authoruuid: "123",
+  chatroomuuid: "123",
+  channeluuid: "123",
 };
 
 const testMessage1: MessageType = {
   author: "Martin Vad",
-  message:
+  content:
     "det her er en test besked, som er skrevet af en test bruger, som hedder Martin Og han siger altid fuck det hele",
   /*  icon: testIcon, */
   timestamp: "16:40",
   /*   uuid: "123", */
   authoruuid: "12345",
+  chatroomuuid: "123",
+  channeluuid: "123",
 };
 
 export const testArrayMessage: MessageType[] = [
