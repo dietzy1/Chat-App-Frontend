@@ -43,7 +43,7 @@ function App() {
 
 export default App;
 
-const ProtectedRoute = ({ user, children }: any) => {
+const ProtectedRoute = ({ user, children }:any) => {
   if (!user) {
     return <Navigate to="/login" replace />;
   }

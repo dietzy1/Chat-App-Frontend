@@ -1,50 +1,70 @@
 import React from "react";
 
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { FaceSmileIcon } from "@heroicons/react/24/outline";
 
-import { useState } from "react";
+import { Marshal } from "../websocket/Serialize";
+import { CreateMessageRequest } from "../proto/v1/message_service_pb";
+import { MessageType, UserType } from "../types/interfaces";
 
-//@ts-ignore
-import InputEmoji from "react-input-emoji";
+import { useCallback } from "react";
 
-const Searchbar = () => {
-  const [text, setText] = useState("");
+export const Searchbar = ({
+  input,
+  setInput,
+  handleClickSendMessage,
+  user,
+}: {
+  input: string;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
+  handleClickSendMessage: (msg: Uint8Array) => void;
+  user: UserType;
+}) => {
+  //construct the message object of type MessageType
 
-  //Need to make the websocket read the text and send it to the server
-  //const wsmsg = JSON.stringify(testMessage);
+  const sendInput = (e: any) => {
+    e.preventDefault();
+    console.log(input);
 
-  //author and author id can be retrieved from the user context
-
-  const onSubmit = (text: string) => {
-    //also needs to be passed in user information and the channel ID
-    let author = "bob";
-    let chatroomuuid = "123";
-    let message = text;
-    let authoruuid = "456";
-
-    const testMessage = {
-      author,
-      chatroomuuid,
-      message,
-      authoruuid,
+    const message: MessageType = {
+      author: "Bob",
+      content: input,
+      authoruuid: user.uuid,
+      chatroomuuid: "4",
+      channeluuid: "6",
+      timestamp: "??",
     };
-    console.log(testMessage);
-    //sendMessage(JSON.stringify(testMessage));
+
+    const msg = Marshal(message);
+
+    setInput("");
+    e.target.reset();
+    handleClickSendMessage(msg);
+    // I might need to pass in the websocket send Function here
   };
 
   return (
     <div>
       <footer className="fixed bottom-0 left-10 right-10  z-10 text-darky flex flex-row justify-center mx-auto w-full">
-        <div className="bg-customgray w-[50vw] h-14 m-2 border rounded-xl flex items-center border-gray-500">
+        <form
+          className="bg-customgray w-[50vw] h-14 m-2 border rounded-xl flex items-center border-gray-500"
+          onSubmit={sendInput}
+        >
           <input
             /* onChange={(e) => setQuery(e.target.value)} */
             className="appearance-none bg-transparent border-none w-full text-white leading-tight focus:outline-none rounded-md text-sm mx-6"
             type="text"
             placeholder="Aa"
+            onChange={(e) => setInput(e.target.value)}
+            /*  onSubmit={() => sendInput} */
           />
 
-          <PaperAirplaneIcon className="w-8 h-8 mx-6" />
-        </div>
+          <FaceSmileIcon className="w-8 h-8 text-white" />
+          <PaperAirplaneIcon
+            className="w-8 h-8 mr-6 mx-2 text-customOrange"
+            onClick={() => sendInput}
+          />
+        </form>
       </footer>
     </div>
   );

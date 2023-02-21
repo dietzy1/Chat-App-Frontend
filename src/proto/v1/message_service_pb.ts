@@ -72,9 +72,34 @@ export class CreateMessageRequest extends Message<CreateMessageRequest> {
  */
 export class CreateMessageResponse extends Message<CreateMessageResponse> {
   /**
-   * @generated from field: string error = 1;
+   * @generated from field: string author = 1;
    */
-  error = "";
+  author = "";
+
+  /**
+   * @generated from field: string content = 2;
+   */
+  content = "";
+
+  /**
+   * @generated from field: string author_uuid = 3;
+   */
+  authorUuid = "";
+
+  /**
+   * @generated from field: string chat_room_uuid = 4;
+   */
+  chatRoomUuid = "";
+
+  /**
+   * @generated from field: string channel_uuid = 5;
+   */
+  channelUuid = "";
+
+  /**
+   * @generated from field: string timestamp = 6;
+   */
+  timestamp = "";
 
   constructor(data?: PartialMessage<CreateMessageResponse>) {
     super();
@@ -84,7 +109,12 @@ export class CreateMessageResponse extends Message<CreateMessageResponse> {
   static readonly runtime = proto3;
   static readonly typeName = "message.v1.CreateMessageResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "error", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "author", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "content", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "author_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "chat_room_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "channel_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "timestamp", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateMessageResponse {

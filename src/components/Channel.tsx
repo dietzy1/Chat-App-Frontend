@@ -5,7 +5,13 @@ import { ChannelType } from "../types/interfaces";
 
 import React from "react";
 
-const Channel = ({ channels }: { channels: ChannelType[] }) => {
+const Channel = ({
+  channels,
+  setChannel,
+}: {
+  channels: ChannelType[];
+  setChannel: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
     <div className="shadow-inner">
       <div className="border-b">
@@ -19,7 +25,9 @@ const Channel = ({ channels }: { channels: ChannelType[] }) => {
       <div>
         {channels &&
           /*        testArrayChatRoom.map((chatroom) => <Card chatroom={chatroom} />)} */
-          channels.map((chatroom) => <Idk channels={channels} />)}
+          channels.map((c) => (
+            <MapChannel channel={c} setChannel={setChannel} />
+          ))}
       </div>
     </div>
   );
@@ -27,11 +35,23 @@ const Channel = ({ channels }: { channels: ChannelType[] }) => {
 
 export default Channel;
 
-const Idk = ({ channels }: { channels: ChannelType[] }) => {
+const MapChannel = ({
+  channel,
+  setChannel,
+}: {
+  channel: ChannelType;
+  setChannel: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
-    <div className="flex flex-row mx-4 rounded p-2 items-center hover:bg-white hover:text-blacky text-lg">
+    <div
+      className="flex flex-row mx-4 rounded p-2 items-center hover:bg-white hover:text-blacky text-lg"
+      onClick={() => {
+        setChannel(channel.channeluuid);
+        console.log("Swapped to channel: " + channel.channeluuid);
+      }}
+    >
       <HashtagIcon className="h-4 w-4 text-customOrange" />
-      <div className="ml-4">General</div>
+      <div className="ml-4">{channel.channeluuid}</div>
     </div>
   );
 };

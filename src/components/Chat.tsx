@@ -1,17 +1,18 @@
 import React from "react";
-import { MessageType, UserType } from "../types/interfaces";
+import { ChannelType, MessageType, UserType } from "../types/interfaces";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useState, useEffect, useCallback } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useState } from "react";
+import { Searchbar } from "./Searchbar";
 
 const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
   const [query, setQuery] = useState("");
   const onSubmit = (e: any) => {
     e.preventDefault();
   };
-  const [text, setText] = useState(msg.message);
+
+  const [text, setText] = useState(msg.content);
   const [editing, setEditing] = useState(false);
 
   const editMessage = (e: any) => {
@@ -27,7 +28,7 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
   };
 
   const revertEditing = () => {
-    setText(msg.message);
+    setText(msg.content);
     editingToggle();
   };
 
@@ -36,42 +37,9 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
     console.log("editing: " + editing);
   };
 
-  //Websocket logic
-  const [socketUrl, setSocketUrl] = useState(
-    "ws://localhost:8000/ws?" + channel + "&" + chatroom
-  );
-  const [messageHistory, setMessageHistory] = useState([]) as any;
-
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
-
-  //Start listening for new messages
-  useEffect(() => {
-    if (lastMessage !== null) {
-      setMessageHistory((prev: any) => prev.concat(lastMessage));
-    }
-  }, [lastMessage, setMessageHistory]);
-
-  //If a new channel is selected this function should be called
-  const handleClickChangeSocketUrl = useCallback(
-    () => setSocketUrl("ws://localhost:8000/ws?" + channel + "&" + chatroom),
-    []
-  );
-
-  //Send a message to the server
-  //Needs to be a protobuf message
-  const handleClickSendMessage = useCallback(() => sendMessage("Hello"), []);
-
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "Open",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "Closed",
-    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-  }[readyState];
-
   return (
     <div className="mb-10 text-lg">
-      {msg.authoruuid === "12345" && (
+      {msg.authoruuid === user.uuid && (
         <div className="flex flex-row m-2  justify-end w-full relative ">
           <div className="flex flex-col group/icon">
             <div className="flex flex-row ml-auto heading">
@@ -119,11 +87,11 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
                   onKeyDown={editMessage}
                   className="block grow-0 mx-6 p-4  overflow-x-hidden break-words w-[40vw] text-react bg-gradient-to-l from-red-400 to-orange-400 bg-opacity-50 border border-customgray  rounded-2xl shadow-2xl"
                 >
-                  {msg.message}
+                  {msg.content}
                 </div>
               ) : (
                 <div className="block grow-0 mx-6 p-4  overflow-x-hidden break-words w-[40vw] text-react bg-gradient-to-l from-red-400 to-orange-400 bg-opacity-50 border border-customgray  rounded-2xl shadow-2xl">
-                  {msg.message}
+                  {msg.content}
                 </div>
               )}
             </div>
@@ -147,7 +115,7 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
       )}
       {/*Breakpoint*/}
 
-      {msg.authoruuid !== "12345" && (
+      {msg.authoruuid !== user.uuid && (
         <div className="flex flex-row m-2 justify-start w-full relative">
           <div className="flex flex-col">
             <div className="flex flex-row heading">
@@ -155,7 +123,7 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
             </div>
 
             <div className="block grow-0 pl-8 mx-6 p-4 break-words overflow-x-hidden w-[40vw]  bg-test   border border-customgray  rounded-2xl shadow-2xl">
-              {msg.message}
+              {msg.content}
 
               <div className="absolute border border-customOrange bg-blacky top-2 left-0 z-10 rounded-2xl">
                 <img

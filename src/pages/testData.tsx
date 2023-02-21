@@ -7,8 +7,7 @@ import {
 
 const testMessage: MessageType = {
   author: "Bob",
-  content:
-    "Det her er en test tekst besked, som er skrevet af en test bruger, som hedder Bob Det her er en test tekst besked, som er skrevet af en test bruger, som hedder Bob",
+  content: "Øv",
   /*  icon: testIcon, */
   timestamp: "16:40",
   /* uuid: "123", */
@@ -19,8 +18,7 @@ const testMessage: MessageType = {
 
 const testMessage1: MessageType = {
   author: "Martin Vad",
-  content:
-    "det her er en test besked, som er skrevet af en test bruger, som hedder Martin Og han siger altid fuck det hele",
+  content: "Double øv",
   /*  icon: testIcon, */
   timestamp: "16:40",
   /*   uuid: "123", */
@@ -77,14 +75,24 @@ export const testArrayUser: UserType[] = [
 ];
 
 export const testChannel: ChannelType = {
-  uuid: "123",
-  name: "General",
+  chatroomuuid: "123",
+  channeluuid: "123",
+};
+
+const testChannel1: ChannelType = {
+  chatroomuuid: "456",
+  channeluuid: "456",
+};
+
+const testChannel2: ChannelType = {
+  chatroomuuid: "789",
+  channeluuid: "789",
 };
 
 export const testArrayChannel: ChannelType[] = [
   testChannel,
-  testChannel,
-  testChannel,
+  testChannel1,
+  testChannel2,
 ];
 
 export const testChatRoom: ChatroomType = {
@@ -95,6 +103,7 @@ export const testChatRoom: ChatroomType = {
   uuid: "123",
   owner: "12345678",
   description: "This is a test chatroom",
+
   channels: testArrayChannel,
 };
 

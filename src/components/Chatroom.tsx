@@ -3,18 +3,30 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 
 import { ChatroomType } from "../types/interfaces";
 
-const Chatroom = ({ chatroom }: { chatroom: ChatroomType }) => {
+const Chatroom = ({
+  chatroom,
+  setChatroom,
+}: {
+  chatroom: ChatroomType;
+  setChatroom: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
-    <div className="m-2 flex justify-center relative group shadow-inner">
+    <div
+      className="m-2 flex justify-center relative group shadow-inner"
+      onClick={() => {
+        setChatroom(chatroom.uuid);
+        console.log("Swapped to chatroom: " + chatroom.name);
+      }}
+    >
       {/*   <img className="rounded-full w-16 h-16" src={chatroom.icon}></img> */}
 
-      <a className="author-avatar" href="">
+      <div className="author-avatar">
         <img src={chatroom.icon} />
 
         <svg className="half-circle" viewBox="0 0 106 57">
           <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
         </svg>
-      </a>
+      </div>
 
       <div className="fixed left-20 w-auto p-3 m-4 min-w-max rounded-md shadow-md text-white bg-gradient-to-l from-red-400 to-orange-400 text-xs font-bold z-10 group-hover:scale-100 transition-all duration-100 scale-0 origin-left">
         {chatroom.name}
