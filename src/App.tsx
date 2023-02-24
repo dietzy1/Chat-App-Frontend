@@ -3,7 +3,13 @@ import reactLogo from "./assets/react.svg";
 import "./App.css";
 import Home from "./pages/Home";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
 import React from "react";
@@ -26,9 +32,10 @@ function App() {
             <Route
               path="/"
               element={
-                <ProtectedRoute user={state.user}>
+                <Home />
+                /*    <ProtectedRoute user={state.user}>
                   <Home />
-                </ProtectedRoute>
+                </ProtectedRoute> */
               }
             />
 
@@ -43,8 +50,11 @@ function App() {
 
 export default App;
 
-const ProtectedRoute = ({ user, children }:any) => {
+const ProtectedRoute = ({ user, children }: any) => {
+  console.log(user);
+
   if (!user) {
+    //return <navigate to="/login" replace />;
     return <Navigate to="/login" replace />;
   }
 

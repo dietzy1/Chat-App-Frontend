@@ -7,8 +7,6 @@ import { Marshal } from "../websocket/Serialize";
 import { CreateMessageRequest } from "../proto/v1/message_service_pb";
 import { MessageType, UserType } from "../types/interfaces";
 
-import { useCallback } from "react";
-
 export const Searchbar = ({
   input,
   setInput,
@@ -22,6 +20,7 @@ export const Searchbar = ({
 }) => {
   //construct the message object of type MessageType
 
+  //this is still hardcoded i need to pass in the actual user information and chatroom information
   const sendInput = (e: any) => {
     e.preventDefault();
     console.log(input);
@@ -60,10 +59,12 @@ export const Searchbar = ({
           />
 
           <FaceSmileIcon className="w-8 h-8 text-white" />
-          <PaperAirplaneIcon
-            className="w-8 h-8 mr-6 mx-2 text-customOrange"
-            onClick={() => sendInput}
-          />
+          <button
+            className=" px-0 py-0 rounded-full  outline-none border-none focus:border-none"
+            type="submit"
+          >
+            <PaperAirplaneIcon className="mr-1 w-8 h-8 ml-1 text-customOrange " />
+          </button>
         </form>
       </footer>
     </div>
@@ -72,6 +73,7 @@ export const Searchbar = ({
 
 export default Searchbar;
 
+/* * w-8 h-8 mr-6 mx-2 */
 {
   /*   <footer className="fixed bottom-0 left-0 right-0 z-10 text-darky flex flex-row justify-center mx-auto w-full">
   <div className="sm:w-[57.5%] w-full flex flex-row justify-center border-gray-500">

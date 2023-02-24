@@ -11,9 +11,7 @@ export const createServer = async (e: React.MouseEvent) => {
       method: "POST",
       credentials: "include",
     });
-  } catch (error) {
-    throw error;
-  }
+  } catch (error) {}
 };
 
 export const deleteServer = async (e: React.MouseEvent) => {
@@ -26,7 +24,6 @@ export const deleteServer = async (e: React.MouseEvent) => {
     });
   } catch (error) {
     console.log(error);
-    throw error;
   }
 };
 
@@ -40,6 +37,18 @@ export const updateServer = async (e: React.MouseEvent) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const requestOnlineUsers = async (dispatch: any) => {
+  try {
+    const res = await fetch(process.env.ONLINEUSERS!, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    return res;
+  } catch (error) {
     throw error;
   }
 };
