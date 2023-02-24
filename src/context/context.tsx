@@ -2,17 +2,11 @@ import React, { useReducer } from "react";
 import { createContext, useContext } from "react";
 
 export const defaultglobalState = {
-  user: true,
-  avatar: "", //This should simply be a default value similar to the discord icon
-  chatserver: "",
-  channel: "",
+  user: false,
 };
 
 export interface defaultGlobalStateType {
   user: boolean; //Logged in or not
-  avatar: string;
-  chatserver: string;
-  channel: string;
 }
 
 export const GlobalStateContext = createContext(defaultglobalState);

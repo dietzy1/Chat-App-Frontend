@@ -27,6 +27,7 @@ import Channel from "../components/Channel";
 import Chatroom, { CreateChatroom } from "../components/Chatroom";
 import Chat from "../components/Chat";
 import Searchbar from "../components/Searchbar";
+import { useNavigate } from "react-router-dom";
 
 //PORTALS
 import { openAccountFunc, openSettingsFunc } from "../portals/Openportals";
@@ -34,15 +35,13 @@ import Account from "../portals/Account";
 import Settings from "../portals/Settings";
 
 //API
-import { LogoutFunc } from "../api/Auth";
+import { isAuthenticatedFunc, LogoutFunc } from "../api/Auth";
 
 //WEBSOCKET
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Unmarshal } from "../websocket/Serialize";
 import { MessageType } from "../types/interfaces";
-
-//I need to make it so that every channel has a unique id which is the url path
-//once every chatroom is attached to a url i can open and close websocket connections to each chatroom based on the user viewing the url
+import { requestOnlineUsers } from "../api/Chatserver";
 
 const Home = () => {
   const [state, dispatch] = useGlobalState();
@@ -50,11 +49,20 @@ const Home = () => {
 
   //Searchbar logic and state
   const [input, setInput] = useState("");
-  const dummy = useRef();
+  const ref = useRef<HTMLInputElement>(null);
+
+  //State for chatrooms and channels
+  const [chatRoomState, setChatRoomState] = useState(testArrayChatRoom);
+  const [channelState, setChannelState] = useState(testArrayChannel);
+
+  //State for users in a chatroom
+  const [userState, setUserState] = useState(testArrayUser);
 
   //Chatroom and channel IDS
   const [chatroom, setChatroom] = useState("");
   const [channel, setChannel] = useState("");
+
+  const navigate = useNavigate();
 
   //I need to pass down the setChatroom and setChannel to chatroom and channel components
 
@@ -71,6 +79,27 @@ const Home = () => {
   const [messageHistory, setMessageHistory] = useState([]) as any;
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+  //useEffect hook to handle authentication and redirecting to login page if not authenticated
+  useEffect(() => {
+    //I need to save the uuid in local storage I think so that I can access it on refresh
+    const uuid = "b08465f2-4cdd-48fc-967f-cf471287d717";
+    const res = isAuthenticatedFunc(uuid, dispatch);
+    console.log(res);
+
+    res.then((res) => {
+      if (res === false) {
+        navigate("/login");
+      }
+    });
+
+    res.then((res) => {
+      if (res === true) {
+        dispatch({ state });
+        console.log(state.user);
+      }
+    });
+  }, []);
 
   //Start listening for new messages
   useEffect(() => {
@@ -89,7 +118,7 @@ const Home = () => {
       console.log(messageHistory);
       //convert lastMessage into a messageType object
     }
-    dummy.current.scrollIntoView({
+    ref!.current!.scrollIntoView({
       behavior: "smooth",
       block: "start",
       inline: "nearest",
@@ -98,13 +127,26 @@ const Home = () => {
 
   //UseEffect hook that updates the socket url when the chatroom or channel is changed
   useEffect(() => {
-    console.log("YES I FCKING SWAPPED IT");
-    console.log(channel);
+    //Change the socket URL to the new chatroom and channel
     handleClickChangeSocketUrl();
     console.log(socketUrl);
+
+    //Reset the message history
+    setMessageHistory([]);
+
+    //perform a get request to get the last 100 messages from the chatroom and channel
   }, [chatroom, channel]);
 
-  //This part doesn't work atm
+  //Use effect hook that userState when the chatroom is changed (this is to get the users in the chatroom)
+  //Later I need to hook it up with a websocket connection that reports who is online
+  useEffect(() => {
+    //Get the users in the chatroom
+    //setUserState();
+    /*  const res = requestOnlineUsers(channel);
+    setUserState(res); */
+  }, [chatroom]);
+
+  //Function which is called when the socket url is changed - Closes the old socket and opens a new one
   const handleClickChangeSocketUrl = useCallback(
     () =>
       setSocketUrl(
@@ -117,6 +159,7 @@ const Home = () => {
     [chatroom, channel]
   );
 
+  //Connection statuses not implemented yet
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
     [ReadyState.OPEN]: "Open",
@@ -125,18 +168,13 @@ const Home = () => {
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
 
+  //This function is used to send messages to the websocket
   const handleClickSendMessage = useCallback(
     (msg: Uint8Array) => sendMessage(msg, true),
     []
   );
 
-  if (!state.user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  useEffect(() => {
-    //I need to request a fuckton of data here
-  }, []);
+  //If user is not authenticated navigate back to login page
 
   return (
     <div className="h-screen w-screen wtf flex flex-row justify-between max-h-screen">
@@ -178,12 +216,12 @@ const Home = () => {
         className={` sm:w-full w-full flex justify-center overflow-x-hidden border-gray-500 h-[96vh] overflow-y-scroll scrollbar-hide `}
       >
         {/*TODO: the magic number was mb-10 before */}
-        <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-20 scrollbar-hide overflow-x-hidden max-w-[100%]">
+        <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-20 scrollbar-hide overflow-x-hidden max-w-[100%] pb-28">
           {messageHistory &&
             messageHistory.map((messageHistory: MessageType) => (
               <Chat msg={messageHistory} user={testUser} />
             ))}
-          <span ref={dummy}></span>
+          <div ref={ref}></div>
         </div>
       </div>
       {/*I might want to wrap this in a div with collum to fix the ref dummy issue*/}

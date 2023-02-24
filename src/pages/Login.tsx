@@ -6,6 +6,8 @@ import { useState } from "react";
 
 import { LoginError } from "../types/interfaces";
 
+import { LoginFunc } from "../api/Auth";
+
 /* const navigate = useNavigate(); */
 
 const Login = () => {
@@ -17,33 +19,43 @@ const Login = () => {
   } as LoginError);
 
   const [state, dispatch] = useGlobalState();
+  const navigate = useNavigate();
 
   const onsubmittestfunc = async (e: any) => {
     e.preventDefault();
     try {
-      const ok = await Loginfunc(username, password);
+      const ok = await LoginFunc(username, password);
+
       if (ok) {
         dispatch({ user: true });
-        /*    navigate(`/`); */
+        console.log("Logged in");
+        console.log(state.User);
+        return <Navigate to="/" replace />;
       }
     } catch (err) {
       console.log("Idk what the fuck is going on here");
+      console.log(error);
     }
-    console.log(error);
   };
 
   const onsubmitfunc = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      const ok = await Loginfunc(username, password);
+      const ok = await LoginFunc(username, password);
       if (ok) {
+        console.log("Logged in");
         dispatch({ user: true });
-        /* navigate(`/`); */
+        //return <Navigate to="/" />;
+        navigate("/");
       }
     } catch (err) {
       setError({ bool: true, error: "Wrong username or password" });
+      console.log(error);
+      navigate("/login");
+    } finally {
+      console.log(state.user);
     }
-    console.log(error);
   };
 
   return (
@@ -122,7 +134,7 @@ const Login = () => {
 };
 
 export default Login;
-
+/* 
 export async function Loginfunc(username: string, password: string) {
   const formData = new FormData();
   formData.set("username", username);
@@ -139,7 +151,7 @@ export async function Loginfunc(username: string, password: string) {
 
   return true;
 }
-
+ */
 export async function testLoginfunc() {
   //take user from browser
   const res = await fetch("localhost:3000/api/testlogin", {
