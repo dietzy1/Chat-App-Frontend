@@ -15,6 +15,7 @@ export const LoginFunc = async (username: string, password: string) => {
       credentials: "include",
       body: data,
     });
+    console.log(res);
   } catch (error) {
     console.log(error);
     return false;
@@ -38,18 +39,25 @@ export const RegisterFunc = async (username: string, password: string) => {
   return Promise.resolve(true);
 };
 
-export const LogoutFunc = async (dispatch: any) => {
-  /*   e.preventDefault(); */
+export const LogoutFunc = async (
+  uuid: string,
+  dispatch: React.Dispatch<defaultGlobalStateType>,
+  navigate: any
+) => {
+  const data = JSON.stringify({ uuid });
   try {
     const res = await fetch(import.meta.env.VITE_LOGOUT!, {
       method: "POST",
       credentials: "include",
+      body: data,
     });
+    console.log(res);
   } catch (error) {
     console.log("ok");
     throw error;
   } finally {
     dispatch({ user: false });
+    navigate("/login");
   }
 };
 

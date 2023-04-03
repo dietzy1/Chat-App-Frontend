@@ -12,7 +12,7 @@ const Online = ({ props }: { props: UserType }) => {
                 alt=""
                 src={props.icon}
               ></img>
-              <div className="bg-green-500 rounded-full p-1.5 border-white border-2 absolute bottom-0 right-0 z-2" />
+              <div className="bg-green-500 rounded-full p-1.5  absolute bottom-0 right-0 z-2" />
             </div>
             <div className="text-gray-500"> {props.author}</div>
           </div>
@@ -38,7 +38,7 @@ export const Offline = ({ props }: { props: UserType }) => {
                 alt=""
                 src={props.icon}
               ></img>
-              <div className="bg-customOrange rounded-full p-1.5 border-white border-2 absolute bottom-0 right-0 z-2 grayscale-0" />
+              <div className="bg-customOrange rounded-full p-1.5  absolute bottom-0 right-0 z-2 grayscale-0" />
             </div>
             <div className="text-gray-500 grayscale-[70%]"> {props.author}</div>
           </div>

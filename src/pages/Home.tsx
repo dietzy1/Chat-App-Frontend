@@ -257,7 +257,13 @@ const Home = () => {
             <ArrowLeftOnRectangleIcon
               className="w-10 h-10 opacity-80 z-[11]"
               /*  TODO:I need to implement the logout function here */
-              onClick={() => LogoutFunc(dispatch)}
+              onClick={() =>
+                LogoutFunc(
+                  "b08465f2-4cdd-48fc-967f-cf471287d717",
+                  dispatch,
+                  navigate
+                )
+              }
             />
           </div>
         </div>

@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 
 import { Navigate, Link, useNavigate } from "react-router-dom";
@@ -7,6 +9,10 @@ import { useState } from "react";
 import { LoginError } from "../types/interfaces";
 
 import { LoginFunc } from "../api/Auth";
+
+import { Client } from "../api/Client";
+import { AuthGatewayService } from "../api/protos/authgateway_service_connect";
+import { LoginRequest } from "../api/protos/authgateway_service_pb";
 
 /* const navigate = useNavigate(); */
 
@@ -18,14 +24,21 @@ const Login = () => {
     error: "",
   } as LoginError);
 
+  const client = new Client("http://localhost:8080", AuthGatewayService);
+
+  const request = new LoginRequest();
+  request.username = username;
+  request.password = password;
+  client.fetch(request);
+
   const [state, dispatch] = useGlobalState();
   const navigate = useNavigate();
 
   const onsubmittestfunc = async (e: any) => {
     e.preventDefault();
     try {
-      const ok = await LoginFunc(username, password);
-
+      //const ok = await LoginFunc(username, password);
+      const ok = await client.fetch(request);
       if (ok) {
         dispatch({ user: true });
         console.log("Logged in");

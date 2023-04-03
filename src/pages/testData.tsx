@@ -45,21 +45,21 @@ export const testArrayMessage: MessageType[] = [
 
 export const testUser: UserType = {
   author: "TestAuthor",
-  icon: "https://ik.imagekit.io/imageAPI/pepes/0cddd5aa-185f-4d57-8264-db93eff2afc9.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1670852349594",
+  icon: "https://ik.imagekit.io/imageAPI/user/298103bc-eb56-4cd2-9881-460bd4a90337.png",
   online: true,
   uuid: "123",
 };
 
 export const testUser2: UserType = {
   author: "TestAuthorBobing",
-  icon: "https://i.imgur.com/0y0tj0x.png",
+  icon: "https://ik.imagekit.io/imageAPI/user/194d9fa4-439a-437a-b675-df20c2da3872.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1677831746211",
   online: true,
   uuid: "123",
 };
 
 const testUser1: UserType = {
   author: "TestAuthor",
-  icon: "https://i.imgur.com/0y0tj0x.png",
+  icon: "https://ik.imagekit.io/imageAPI/user/defaultAvatar.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1677417476895",
   online: false,
   uuid: "123",
 };
