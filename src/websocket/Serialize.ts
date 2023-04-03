@@ -1,3 +1,5 @@
+/** @format */
+
 //I need to implement some serializing functions here to convert everything to the protobuf schema
 
 //Import the protobuf type from types
@@ -19,10 +21,10 @@ export function Marshal(m: MessageType): Uint8Array {
   message.channelUuid = m.channeluuid;
 
   //perform check to see if the message is valid and contains all the required fields
-  const error = Validate(message);
-  if (error) {
-    console.log(error);
-    throw error;
+  const success = Validate(message);
+  if (!success) {
+    console.log(success);
+    throw Error;
   }
   return message.toBinary();
 }
@@ -50,28 +52,10 @@ export function Unmarshal(m: Uint8Array): MessageType {
 
 //validate the protobuf message
 export function Validate(m: CreateMessageRequest): boolean {
-  if (m.author == undefined || m.author == null || m.author == "") {
-    return true;
-  }
-  if (m.content == undefined || m.content == null || m.content == "") {
-    return true;
-  }
-  if (m.authorUuid == undefined || m.authorUuid == null || m.authorUuid == "") {
-    return true;
-  }
-  if (
-    m.chatRoomUuid == undefined ||
-    m.chatRoomUuid == null ||
-    m.chatRoomUuid == ""
-  ) {
-    return true;
-  }
-  if (
-    m.channelUuid == undefined ||
-    m.channelUuid == null ||
-    m.channelUuid == ""
-  ) {
-    return true;
-  }
-  return false;
+  // @ts-ignore
+  return (m.author &&
+    m.content &&
+    m.authorUuid &&
+    m.chatRoomUuid &&
+    m.channelUuid) as boolean;
 }

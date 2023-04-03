@@ -16,11 +16,17 @@ export class Client {
   ): Promise<O | undefined> {
     const json = request.toJsonString();
 
+    //Validate the request
+    const ok = validate(json);
+    if (!ok) {
+      throw new Error("The request is not valid");
+    }
+
     let method = null;
     for (const methodKey in this.service.methods) {
       if (methodKey === "") {
         throw new Error(
-          "The type of ${this.service.typeName} has no methods that matches the request type ${request.constructor.name}"
+          `The type of ${this.service.typeName} has no methods that matches the request type ${request.constructor.name}`
         );
       }
       const t = this.service.methods[methodKey];
@@ -31,7 +37,6 @@ export class Client {
       }
     }
 
-    //AuthGatewayService.typeName + "/" + AuthGatewayService.methods.login.name
     try {
       const res = await fetch(
         `${this.baseUrl}/${this.service.typeName}/${method}`,
@@ -43,10 +48,19 @@ export class Client {
           },
         }
       );
-
       return res.json();
     } catch (e) {
       console.log(e);
     }
   }
+}
+
+function validate<T extends {}>(obj: T): boolean {
+  //Validate that the message fields are valid
+  for (const key in obj) {
+    if (!obj[key]) {
+      return false;
+    }
+  }
+  return true;
 }

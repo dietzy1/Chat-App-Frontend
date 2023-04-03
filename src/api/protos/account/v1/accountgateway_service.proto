@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package accountgateway.v1;
+
+service AccountGatewayService {
+  //External RPC
+  rpc ChangeUsername(ChangeUsernameRequest) returns (ChangeUsernameResponse) {}
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {}
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse) {}
+}
+
+message ChangeUsernameRequest {
+  string user_uuid = 1;
+  string username = 2;
+}
+
+message ChangeUsernameResponse {}
+
+message ChangePasswordRequest {
+  string user_uuid = 1;
+  string password = 2;
+  string new_password = 3;
+}
+
+message ChangePasswordResponse {}
+
+message DeleteAccountRequest {
+  string user_uuid = 1;
+  string password = 2;
+}
+
+message DeleteAccountResponse {}

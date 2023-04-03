@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package usergateway.v1;
+
+option go_package = "github.com/dietzy1/chatapp/services/apigateway/usergateway/v1;usergatewayv1";
+
+service UserGatewayService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+
+  rpc EditDescription(EditDescriptionRequest) returns (EditDescriptionResponse) {}
+
+  rpc ChangeAvatar(ChangeAvatarRequest) returns (ChangeAvatarResponse) {}
+
+  rpc GetAvatars(GetAvatarsRequest) returns (GetAvatarsResponse) {}
+}
+
+message GetUserRequest {
+  string user_uuid = 1;
+}
+
+message GetUserResponse {
+  string name = 1;
+  string uuid = 2;
+  Icon icon = 3;
+  string description = 4;
+  string join_date = 5;
+  repeated string chat_servers = 6;
+}
+
+message EditDescriptionRequest {
+  string user_uuid = 1;
+  string description = 2;
+}
+
+message EditDescriptionResponse {}
+
+message ChangeAvatarRequest {
+  string user_uuid = 1;
+  string icon_uuid = 2;
+}
+
+message ChangeAvatarResponse {}
+
+message GetAvatarsRequest {}
+
+message GetAvatarsResponse {
+  repeated Icon icons = 1;
+}
+
+message Icon {
+  string link = 1;
+  string uuid = 2;
+}
