@@ -8,11 +8,9 @@ import { useState } from "react";
 
 import { LoginError } from "../types/interfaces";
 
-import { LoginFunc } from "../api/Auth";
-
 import { Client } from "../api/Client";
-import { AuthGatewayService } from "../api/protos/authgateway_service_connect";
-import { LoginRequest } from "../api/protos/authgateway_service_pb";
+import { AuthGatewayService } from "../api/protos/auth/v1/authgateway_service_connect";
+import { LoginRequest } from "../api/protos/auth/v1/authgateway_service_pb";
 
 /* const navigate = useNavigate(); */
 
@@ -24,17 +22,12 @@ const Login = () => {
     error: "",
   } as LoginError);
 
-  const client = new Client("http://localhost:8080", AuthGatewayService);
-
-  const request = new LoginRequest();
-  request.username = username;
-  request.password = password;
-  client.fetch(request);
+  const client = new Client(AuthGatewayService);
 
   const [state, dispatch] = useGlobalState();
   const navigate = useNavigate();
 
-  const onsubmittestfunc = async (e: any) => {
+  /*   const onsubmittestfunc = async (e: any) => {
     e.preventDefault();
     try {
       //const ok = await LoginFunc(username, password);
@@ -49,25 +42,21 @@ const Login = () => {
       console.log("Idk what the fuck is going on here");
       console.log(error);
     }
-  };
+  }; */
 
   const onsubmitfunc = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      const ok = await LoginFunc(username, password);
-      if (ok) {
-        console.log("Logged in");
-        dispatch({ user: true });
-        //return <Navigate to="/" />;
-        navigate("/");
-      }
-    } catch (err) {
+    const request = new LoginRequest();
+    request.username = username;
+    request.password = password;
+    const res = await client.fetch(request);
+    if (res !== undefined) {
+      console.log("Logged in");
+      dispatch({ user: true });
+      navigate("/");
+    } else {
       setError({ bool: true, error: "Wrong username or password" });
-      console.log(error);
       navigate("/login");
-    } finally {
-      console.log(state.user);
     }
   };
 
@@ -134,7 +123,7 @@ const Login = () => {
               <a
                 href="http.localhost:5173/"
                 className="underline text-customOrange"
-                onClick={onsubmittestfunc}
+                /*    onClick={onsubmittestfunc} */
               >
                 Click here
               </a>
@@ -147,31 +136,3 @@ const Login = () => {
 };
 
 export default Login;
-/* 
-export async function Loginfunc(username: string, password: string) {
-  const formData = new FormData();
-  formData.set("username", username);
-  formData.set("password", password);
-
-  const res = await fetch("localhost:3000/api/login", {
-    method: "POST",
-    body: formData,
-    credentials: "include",
-  });
-  if (!res.ok) {
-    return false;
-  }
-
-  return true;
-}
- */
-export async function testLoginfunc() {
-  //take user from browser
-  const res = await fetch("localhost:3000/api/testlogin", {
-    method: "POST",
-  });
-  if (!res.ok) {
-    return false;
-  }
-  return true;
-}

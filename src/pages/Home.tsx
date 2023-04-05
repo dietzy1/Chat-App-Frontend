@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 import "../App.css";
 import { defaultGlobalStateType, useGlobalState } from "../context/context";
@@ -19,6 +21,17 @@ import {
   testArrayChannel,
 } from "./testData";
 
+//API services
+import { ChatroomGatewayService } from "../api/protos/chatroom/v1/chatroomgateway_service_connect";
+import { UserGatewayService } from "../api/protos/user/v1/usergateway_service_connect";
+import { MessageGatewayService } from "../api/protos/message/v1/messagegateway_service_connect";
+import { AccountGatewayService } from "../api/protos/account/v1/accountgateway_service_connect";
+import { AuthGatewayService } from "../api/protos/auth/v1/authgateway_service_connect";
+
+//API requests
+import { GetRoomRequest } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
+import { GetRoomResponse } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
+
 //COMPONENTS
 import Online, { Offline } from "../components/Online";
 import Navbar from "../components/Navbar";
@@ -34,14 +47,17 @@ import { openAccountFunc, openSettingsFunc } from "../portals/Openportals";
 import Account from "../portals/Account";
 import Settings from "../portals/Settings";
 
-//API
-import { isAuthenticatedFunc, LogoutFunc } from "../api/Auth";
-
 //WEBSOCKET
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Unmarshal } from "../websocket/Serialize";
 import { MessageType } from "../types/interfaces";
-import { requestOnlineUsers } from "../api/Chatserver";
+import { Client } from "../api/Client";
+import {
+  AuthenticateRequest,
+  AuthenticateResponse,
+  LogoutRequest,
+  LogoutResponse,
+} from "../api/protos/auth/v1/authgateway_service_pb";
 
 const Home = () => {
   const [state, dispatch] = useGlobalState();
@@ -64,10 +80,12 @@ const Home = () => {
 
   const navigate = useNavigate();
 
-  //I need to pass down the setChatroom and setChannel to chatroom and channel components
-
-  //I need to write a function that loads in a set amount of prior messages incase the websocket connection is empty
-  //The logic should probaly be placed within the useEffect hook
+  //API clients
+  const chatroomClient = new Client(ChatroomGatewayService);
+  const userClient = new Client(UserGatewayService);
+  const accountClient = new Client(AccountGatewayService);
+  const messageClient = new Client(MessageGatewayService);
+  const authClient = new Client(AuthGatewayService);
 
   //Portals
   const [openAccount, setOpenAccount] = React.useState(false);
@@ -82,23 +100,23 @@ const Home = () => {
 
   //useEffect hook to handle authentication and redirecting to login page if not authenticated
   useEffect(() => {
-    //I need to save the uuid in local storage I think so that I can access it on refresh
-    const uuid = "b08465f2-4cdd-48fc-967f-cf471287d717";
-    const res = isAuthenticatedFunc(uuid, dispatch);
-    console.log(res);
-
-    res.then((res) => {
-      if (res === false) {
+    console.log("Authenticating...");
+    (async function () {
+      const req = new AuthenticateRequest();
+      const response = (await authClient.fetch(req)) as
+        | AuthenticateResponse
+        | undefined;
+      if (response !== undefined) {
+        console.log("Authenticated!");
+        navigate("/");
+        dispatch({ user: true });
+      } else {
+        console.log("Not authenticated!");
         navigate("/login");
+        dispatch({ user: false });
       }
-    });
-
-    res.then((res) => {
-      if (res === true) {
-        dispatch({ state });
-        console.log(state.user);
-      }
-    });
+      console.log("Current state of user logged in is: ", state.user);
+    })();
   }, []);
 
   //Start listening for new messages
@@ -108,7 +126,6 @@ const Home = () => {
       reader.readAsArrayBuffer(lastMessage.data);
       reader.onloadend = () => {
         const data = new Uint8Array(reader.result as ArrayBuffer);
-        //Call protobuf unmarshal function to convert the data into a message type object
         const message = Unmarshal(data);
         setMessageHistory((messageHistory: any) => [
           ...messageHistory,
@@ -116,7 +133,6 @@ const Home = () => {
         ]);
       };
       console.log(messageHistory);
-      //convert lastMessage into a messageType object
     }
     ref!.current!.scrollIntoView({
       behavior: "smooth",
@@ -140,10 +156,17 @@ const Home = () => {
   //Use effect hook that userState when the chatroom is changed (this is to get the users in the chatroom)
   //Later I need to hook it up with a websocket connection that reports who is online
   useEffect(() => {
-    //Get the users in the chatroom
-    //setUserState();
-    /*  const res = requestOnlineUsers(channel);
-    setUserState(res); */
+    const req = new GetRoomRequest();
+    //Extract uuid from cookie
+    const myCookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("uuid_token="))
+      ?.split("=")[1];
+
+    req.chatroomUuid = myCookieValue!;
+
+    const ok = chatroomClient.fetch(req);
+    console.log(ok);
   }, [chatroom]);
 
   //Function which is called when the socket url is changed - Closes the old socket and opens a new one
@@ -184,11 +207,10 @@ const Home = () => {
       <div className="w-[30rem] flex flex-row">
         <div className=" flex flex-col">
           <div className="sm:w-28 h-[93vh] hidden sm:flex flex-col w-full overflow-y-scroll scrollbar-hide pt-24  justify-start  bg-blacky border-r border-gray-900">
-            {testArrayChatRoom &&
-              /*        testArrayChatRoom.map((chatroom) => <Card chatroom={chatroom} />)} */
+            {/*  {testArrayChatRoom &&
               testArrayChatRoom.map((chatroom) => (
                 <Chatroom chatroom={chatroom} setChatroom={setChatroom} />
-              ))}
+              ))} */}
           </div>
           {/*   @ts-ignore */}
           {/*  <OpenWSConn stateYep={state} /> */}
@@ -201,12 +223,12 @@ const Home = () => {
 
         <div className="sm:w-full hidden sm:flex flex-col shrink bg-test  pt-28 drop-shadow-2xl border-gray-900 border-r">
           <div className="h-[92vh] flex flex-col overflow-y-scroll scrollbar-hide">
-            <div>
+            {/* <div>
               <Channel channels={testArrayChannel} setChannel={setChannel} />
-            </div>
+            </div> */}
           </div>
           <div className="h-[8vh] border-t bg-test mt-4">
-            <User user={testUser} />
+            {/* <User user={testUser} /> */}
           </div>
         </div>
       </div>
@@ -217,10 +239,10 @@ const Home = () => {
       >
         {/*TODO: the magic number was mb-10 before */}
         <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-20 scrollbar-hide overflow-x-hidden max-w-[100%] pb-28">
-          {messageHistory &&
+          {/*  {messageHistory &&
             messageHistory.map((messageHistory: MessageType) => (
               <Chat msg={messageHistory} user={testUser} />
-            ))}
+            ))} */}
           <div ref={ref}></div>
         </div>
       </div>
@@ -258,11 +280,15 @@ const Home = () => {
               className="w-10 h-10 opacity-80 z-[11]"
               /*  TODO:I need to implement the logout function here */
               onClick={() =>
-                LogoutFunc(
-                  "b08465f2-4cdd-48fc-967f-cf471287d717",
-                  dispatch,
-                  navigate
-                )
+                //Create anominous async function that logs out the user
+                (async () => {
+                  const req = new LogoutRequest();
+                  const response = (await authClient.fetch(
+                    req
+                  )) as LogoutResponse;
+                  navigate("/login");
+                  dispatch({ user: false });
+                })()
               }
             />
           </div>

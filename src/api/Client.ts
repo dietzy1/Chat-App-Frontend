@@ -6,8 +6,8 @@ export class Client {
   private service: ServiceType;
   private baseUrl: string;
 
-  constructor(baseUrl: string, service: ServiceType) {
-    this.baseUrl = baseUrl;
+  constructor(service: ServiceType) {
+    this.baseUrl = "http://localhost:8090";
     this.service = service;
   }
 
@@ -30,35 +30,55 @@ export class Client {
         );
       }
       const t = this.service.methods[methodKey];
-
       if (t.I === request.constructor) {
         method = t.name;
         break;
       }
     }
-
     try {
       const res = await fetch(
         `${this.baseUrl}/${this.service.typeName}/${method}`,
         {
           method: "POST",
+          credentials: "include",
           body: json,
-          headers: {
+          /* headers: {
             "Content-Type": "application/json",
-          },
+          }, */
         }
       );
-      return res.json();
+      if (!res.ok) {
+        console.log("fetch is != to 200");
+        return undefined;
+      }
+      return (await res.json()) as O;
     } catch (e) {
       console.log(e);
+      console.log("Error in fetch");
     }
   }
 }
 
-function validate<T extends {}>(obj: T): boolean {
+//This function should perhabs support recursive validation
+/* function validate<T extends {}>(obj: T): boolean {
   //Validate that the message fields are valid
   for (const key in obj) {
     if (!obj[key]) {
+      return false;
+    }
+  }
+  return true;
+} */
+
+function validate<T extends {}>(obj: T): boolean {
+  // Validate that the message fields are valid
+  for (const key in obj) {
+    const value = obj[key];
+    if (value && typeof value === "object") {
+      if (!validate(value)) {
+        return false;
+      }
+    } else if (!value) {
       return false;
     }
   }

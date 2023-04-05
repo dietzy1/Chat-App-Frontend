@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -5,6 +7,10 @@ import { useGlobalState } from "../context/context";
 import { useState } from "react";
 
 import { LoginError } from "../types/interfaces";
+
+import { Client } from "../api/Client";
+import { AuthGatewayService } from "../api/protos/auth/v1/authgateway_service_connect";
+import { RegisterRequest } from "../api/protos/auth/v1/authgateway_service_pb";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -14,23 +20,25 @@ const Register = () => {
     error: "",
   } as LoginError);
 
+  const navigate = useNavigate();
+
   const [state, dispatch] = useGlobalState();
+  const client = new Client(AuthGatewayService);
 
   const onsubmitfunc = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const ok = await Registerfunc(username, password);
-      if (ok) {
-        dispatch({ user: true });
-        /* navigate(`/`); */
-      }
-    } catch (err) {
-      setError({
-        bool: true,
-        error: "I need to pass in the string from the error msg",
-      });
+    const request = new RegisterRequest();
+    request.username = username;
+    request.password = password;
+    const res = await client.fetch(request);
+    if (res !== undefined) {
+      console.log("Registered");
+      dispatch({ user: true });
+      navigate("/login");
+    } else {
+      setError({ bool: true, error: "Wrong username or password" });
+      navigate("/register");
     }
-    console.log(error);
   };
 
   return (

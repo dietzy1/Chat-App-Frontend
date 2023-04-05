@@ -53,16 +53,6 @@ export class LoginRequest extends Message<LoginRequest> {
  * @generated from message authgateway.v1.LoginResponse
  */
 export class LoginResponse extends Message<LoginResponse> {
-  /**
-   * @generated from field: int32 status = 1;
-   */
-  status = 0;
-
-  /**
-   * @generated from field: string error = 2;
-   */
-  error = "";
-
   constructor(data?: PartialMessage<LoginResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -71,8 +61,6 @@ export class LoginResponse extends Message<LoginResponse> {
   static readonly runtime = proto3;
   static readonly typeName = "authgateway.v1.LoginResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "status", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "error", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): LoginResponse {
@@ -139,21 +127,6 @@ export class RegisterRequest extends Message<RegisterRequest> {
  * @generated from message authgateway.v1.RegisterResponse
  */
 export class RegisterResponse extends Message<RegisterResponse> {
-  /**
-   * @generated from field: string session = 1;
-   */
-  session = "";
-
-  /**
-   * @generated from field: int32 status = 2;
-   */
-  status = 0;
-
-  /**
-   * @generated from field: string error = 3;
-   */
-  error = "";
-
   constructor(data?: PartialMessage<RegisterResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -162,9 +135,6 @@ export class RegisterResponse extends Message<RegisterResponse> {
   static readonly runtime = proto3;
   static readonly typeName = "authgateway.v1.RegisterResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "session", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "status", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "error", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RegisterResponse {
@@ -188,11 +158,6 @@ export class RegisterResponse extends Message<RegisterResponse> {
  * @generated from message authgateway.v1.LogoutRequest
  */
 export class LogoutRequest extends Message<LogoutRequest> {
-  /**
-   * @generated from field: string uuid = 1;
-   */
-  uuid = "";
-
   constructor(data?: PartialMessage<LogoutRequest>) {
     super();
     proto3.util.initPartial(data, this);
@@ -201,7 +166,6 @@ export class LogoutRequest extends Message<LogoutRequest> {
   static readonly runtime = proto3;
   static readonly typeName = "authgateway.v1.LogoutRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): LogoutRequest {
@@ -225,16 +189,6 @@ export class LogoutRequest extends Message<LogoutRequest> {
  * @generated from message authgateway.v1.LogoutResponse
  */
 export class LogoutResponse extends Message<LogoutResponse> {
-  /**
-   * @generated from field: int32 status = 1;
-   */
-  status = 0;
-
-  /**
-   * @generated from field: string error = 2;
-   */
-  error = "";
-
   constructor(data?: PartialMessage<LogoutResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -243,8 +197,6 @@ export class LogoutResponse extends Message<LogoutResponse> {
   static readonly runtime = proto3;
   static readonly typeName = "authgateway.v1.LogoutResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "status", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "error", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): LogoutResponse {
@@ -268,11 +220,6 @@ export class LogoutResponse extends Message<LogoutResponse> {
  * @generated from message authgateway.v1.AuthenticateRequest
  */
 export class AuthenticateRequest extends Message<AuthenticateRequest> {
-  /**
-   * @generated from field: string uuid = 1;
-   */
-  uuid = "";
-
   constructor(data?: PartialMessage<AuthenticateRequest>) {
     super();
     proto3.util.initPartial(data, this);
@@ -281,7 +228,6 @@ export class AuthenticateRequest extends Message<AuthenticateRequest> {
   static readonly runtime = proto3;
   static readonly typeName = "authgateway.v1.AuthenticateRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AuthenticateRequest {
@@ -305,16 +251,6 @@ export class AuthenticateRequest extends Message<AuthenticateRequest> {
  * @generated from message authgateway.v1.AuthenticateResponse
  */
 export class AuthenticateResponse extends Message<AuthenticateResponse> {
-  /**
-   * @generated from field: int32 status = 1;
-   */
-  status = 0;
-
-  /**
-   * @generated from field: string error = 2;
-   */
-  error = "";
-
   constructor(data?: PartialMessage<AuthenticateResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -323,8 +259,6 @@ export class AuthenticateResponse extends Message<AuthenticateResponse> {
   static readonly runtime = proto3;
   static readonly typeName = "authgateway.v1.AuthenticateResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "status", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "error", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AuthenticateResponse {
