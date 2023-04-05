@@ -58,6 +58,15 @@ import {
   LogoutRequest,
   LogoutResponse,
 } from "../api/protos/auth/v1/authgateway_service_pb";
+import {
+  GetUserRequest,
+  GetUserResponse,
+} from "../api/protos/user/v1/usergateway_service_pb";
+
+import {
+  GetRoomsRequest,
+  GetRoomsResponse,
+} from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
 const Home = () => {
   const [state, dispatch] = useGlobalState();
@@ -68,11 +77,13 @@ const Home = () => {
   const ref = useRef<HTMLInputElement>(null);
 
   //State for chatrooms and channels
-  const [chatRoomState, setChatRoomState] = useState(testArrayChatRoom);
-  const [channelState, setChannelState] = useState(testArrayChannel);
+  const [chatRoomState, setChatRoomState] = useState(null);
+  const [channelState, setChannelState] = useState(null);
 
   //State for users in a chatroom
-  const [userState, setUserState] = useState(testArrayUser);
+  const [userState, setUserState] = useState<GetUserResponse | undefined>(
+    undefined
+  );
 
   //Chatroom and channel IDS
   const [chatroom, setChatroom] = useState("");
@@ -155,19 +166,66 @@ const Home = () => {
 
   //Use effect hook that userState when the chatroom is changed (this is to get the users in the chatroom)
   //Later I need to hook it up with a websocket connection that reports who is online
-  useEffect(() => {
-    const req = new GetRoomRequest();
-    //Extract uuid from cookie
-    const myCookieValue = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("uuid_token="))
-      ?.split("=")[1];
+  useEffect(
+    () => {
+      console.log("Requesting user information...");
+      (async function () {
+        const req = new GetUserRequest();
+        req.userUuid = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("uuid_token="))
+          ?.split("=")[1]!;
+        const res = (await userClient.fetch(req)) as
+          | GetUserResponse
+          | undefined;
+        if (res !== undefined) {
+          console.log("User information received!");
+          //Need to figure out some logic here prolly
+          console.log(res);
+          setUserState(res);
+          //TODO:
+          console.log("Requesting chatrooms...");
 
-    req.chatroomUuid = myCookieValue!;
+          (async function () {
+            const req = new GetRoomsRequest();
+            //req.chatroomUuids = userState?.chatServers!;
+            req.chatroomUuids = ["5cd69ca7-7fbf-4693-99a7-62ceb4e6a395"];
+            const res = (await chatroomClient.fetch(req)) as
+              | GetRoomsResponse
+              | undefined;
+            if (res !== undefined) {
+              console.log("Chatrooms received!");
+              console.log(res);
+            } else {
+              console.log("Chatrooms not received!");
+            }
+          })();
+          //TODO:
+        }
+      })();
+      console.log("User state is: ", userState);
 
-    const ok = chatroomClient.fetch(req);
-    console.log(ok);
-  }, [chatroom]);
+      /*   console.log("Requesting chatrooms...");
+      const req = new GetRoomsRequest();
+      req.chatroomUuids = userState?.chatServers!;
+      (async function () {
+        const res = (await chatroomClient.fetch(req)) as
+          | GetRoomsRequest
+          | undefined;
+        if (res !== undefined) {
+          console.log("Chatrooms received!");
+        }
+      })(); */
+
+      console.log("Chatroom state is: ", chatRoomState);
+    },
+    [
+      /* userState?.uuid */
+    ]
+  );
+
+  //Use effect hook that requests array of chatrooms when the user logs in
+  useEffect(() => {}, []);
 
   //Function which is called when the socket url is changed - Closes the old socket and opens a new one
   const handleClickChangeSocketUrl = useCallback(
@@ -199,6 +257,8 @@ const Home = () => {
 
   //If user is not authenticated navigate back to login page
 
+  //The issue is that
+
   return (
     <div className="h-screen w-screen wtf flex flex-row justify-between max-h-screen">
       <Navbar chatroom={testChatRoom} open={open} onClose={setOpen} />
@@ -207,14 +267,21 @@ const Home = () => {
       <div className="w-[30rem] flex flex-row">
         <div className=" flex flex-col">
           <div className="sm:w-28 h-[93vh] hidden sm:flex flex-col w-full overflow-y-scroll scrollbar-hide pt-24  justify-start  bg-blacky border-r border-gray-900">
-            {/*  {testArrayChatRoom &&
-              testArrayChatRoom.map((chatroom) => (
+            {/* {userState?.chatServers &&
+              userState?.chatServers.map((chatroom) => (
                 <Chatroom chatroom={chatroom} setChatroom={setChatroom} />
               ))} */}
+            {userState?.chatServers ? (
+              userState.chatServers.map((chatroom) => (
+                <Chatroom chatroom={chatroom} setChatroom={setChatroom} />
+              ))
+            ) : (
+              <div>loading</div>
+            )}
           </div>
           {/*   @ts-ignore */}
           {/*  <OpenWSConn stateYep={state} /> */}
-          <div className="h-[7vh] flex border-gray-900 drop-shadow-2xl mx-auto">
+          <div className="h-[7vh] flex border-gray-900 drop-shadow-2xl mx-auto z-20">
             {/* <ArrowLeftOnRectangleIcon className="text-white w-10 h-10 my-auto mx-auto" /> */}
 
             <CreateChatroom />
@@ -223,12 +290,12 @@ const Home = () => {
 
         <div className="sm:w-full hidden sm:flex flex-col shrink bg-test  pt-28 drop-shadow-2xl border-gray-900 border-r">
           <div className="h-[92vh] flex flex-col overflow-y-scroll scrollbar-hide">
-            {/* <div>
+            <div>
               <Channel channels={testArrayChannel} setChannel={setChannel} />
-            </div> */}
+            </div>
           </div>
           <div className="h-[8vh] border-t bg-test mt-4">
-            {/* <User user={testUser} /> */}
+            {/* <User user={userState!} /> */}
           </div>
         </div>
       </div>
@@ -256,14 +323,14 @@ const Home = () => {
           </span>
 
           <div className="w-[100%] ">
-            {testArrayUser &&
-              testArrayUser.map((test) => <Online props={test} />)}
+            {/*  {testArrayUser &&
+              testArrayUser.map((test) => <Online props={test} />)} */}
 
             <span className="text-2xl font-semibold text-white flex flex-col w-full">
               <span className="max-w-xs ml-auto w-64"> {"Offline - 2"}</span>
             </span>
-            {testArrayUser &&
-              testArrayUser.map((test) => <Offline props={test} />)}
+            {/*   {testArrayUser &&
+              testArrayUser.map((test) => <Offline props={test} />)} */}
           </div>
         </div>
         <div className="h-[8vh]">

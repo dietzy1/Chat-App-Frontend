@@ -206,19 +206,24 @@ export class GetRoomResponse extends Message<GetRoomResponse> {
   name = "";
 
   /**
-   * @generated from field: string owner_uuid = 3;
+   * @generated from field: string icon = 3;
+   */
+  icon = "";
+
+  /**
+   * @generated from field: string owner_uuid = 4;
    */
   ownerUuid = "";
 
   /**
-   * @generated from field: repeated string user_uuids = 4;
+   * @generated from field: repeated string user_uuids = 5;
    */
   userUuids: string[] = [];
 
   /**
-   * @generated from field: repeated string channel_uuids = 5;
+   * @generated from field: repeated chatroomgateway.v1.Channel channel = 6;
    */
-  channelUuids: string[] = [];
+  channel: Channel[] = [];
 
   constructor(data?: PartialMessage<GetRoomResponse>) {
     super();
@@ -230,9 +235,10 @@ export class GetRoomResponse extends Message<GetRoomResponse> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "chatroom_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "owner_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "user_uuids", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
-    { no: 5, name: "channel_uuids", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    { no: 3, name: "icon", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "owner_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "user_uuids", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    { no: 6, name: "channel", kind: "message", T: Channel, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomResponse {
@@ -249,6 +255,135 @@ export class GetRoomResponse extends Message<GetRoomResponse> {
 
   static equals(a: GetRoomResponse | PlainMessage<GetRoomResponse> | undefined, b: GetRoomResponse | PlainMessage<GetRoomResponse> | undefined): boolean {
     return proto3.util.equals(GetRoomResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message chatroomgateway.v1.Channel
+ */
+export class Channel extends Message<Channel> {
+  /**
+   * @generated from field: string uuid = 1;
+   */
+  uuid = "";
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name = "";
+
+  /**
+   * @generated from field: string chatroom_uuid = 3;
+   */
+  chatroomUuid = "";
+
+  /**
+   * @generated from field: string owner_uuid = 4;
+   */
+  ownerUuid = "";
+
+  constructor(data?: PartialMessage<Channel>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "chatroomgateway.v1.Channel";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "chatroom_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "owner_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Channel {
+    return new Channel().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Channel {
+    return new Channel().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Channel {
+    return new Channel().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Channel | PlainMessage<Channel> | undefined, b: Channel | PlainMessage<Channel> | undefined): boolean {
+    return proto3.util.equals(Channel, a, b);
+  }
+}
+
+/**
+ * @generated from message chatroomgateway.v1.GetRoomsRequest
+ */
+export class GetRoomsRequest extends Message<GetRoomsRequest> {
+  /**
+   * @generated from field: repeated string chatroom_uuids = 1;
+   */
+  chatroomUuids: string[] = [];
+
+  constructor(data?: PartialMessage<GetRoomsRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "chatroomgateway.v1.GetRoomsRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "chatroom_uuids", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomsRequest {
+    return new GetRoomsRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetRoomsRequest {
+    return new GetRoomsRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetRoomsRequest {
+    return new GetRoomsRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetRoomsRequest | PlainMessage<GetRoomsRequest> | undefined, b: GetRoomsRequest | PlainMessage<GetRoomsRequest> | undefined): boolean {
+    return proto3.util.equals(GetRoomsRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message chatroomgateway.v1.GetRoomsResponse
+ */
+export class GetRoomsResponse extends Message<GetRoomsResponse> {
+  /**
+   * @generated from field: repeated chatroomgateway.v1.GetRoomResponse rooms = 1;
+   */
+  rooms: GetRoomResponse[] = [];
+
+  constructor(data?: PartialMessage<GetRoomsResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "chatroomgateway.v1.GetRoomsResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "rooms", kind: "message", T: GetRoomResponse, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomsResponse {
+    return new GetRoomsResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetRoomsResponse {
+    return new GetRoomsResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetRoomsResponse {
+    return new GetRoomsResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetRoomsResponse | PlainMessage<GetRoomsResponse> | undefined, b: GetRoomsResponse | PlainMessage<GetRoomsResponse> | undefined): boolean {
+    return proto3.util.equals(GetRoomsResponse, a, b);
   }
 }
 

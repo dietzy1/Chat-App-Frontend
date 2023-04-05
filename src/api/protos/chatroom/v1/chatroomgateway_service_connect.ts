@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AddUserRequest, AddUserResponse, CreateChannelRequest, CreateChannelResponse, CreateRoomRequest, CreateRoomResponse, DeleteChannelRequest, DeleteChannelResponse, DeleteRoomRequest, DeleteRoomResponse, GetChannelRequest, GetChannelResponse, GetRoomRequest, GetRoomResponse, InviteUserRequest, InviteUserResponse, RemoveUserRequest, RemoveUserResponse } from "./chatroomgateway_service_pb.js";
+import { AddUserRequest, AddUserResponse, CreateChannelRequest, CreateChannelResponse, CreateRoomRequest, CreateRoomResponse, DeleteChannelRequest, DeleteChannelResponse, DeleteRoomRequest, DeleteRoomResponse, GetChannelRequest, GetChannelResponse, GetRoomRequest, GetRoomResponse, GetRoomsRequest, GetRoomsResponse, InviteUserRequest, InviteUserResponse, RemoveUserRequest, RemoveUserResponse } from "./chatroomgateway_service_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -37,6 +37,15 @@ export const ChatroomGatewayService = {
       name: "GetRoom",
       I: GetRoomRequest,
       O: GetRoomResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc chatroomgateway.v1.ChatroomGatewayService.GetRooms
+     */
+    getRooms: {
+      name: "GetRooms",
+      I: GetRoomsRequest,
+      O: GetRoomsResponse,
       kind: MethodKind.Unary,
     },
     /**

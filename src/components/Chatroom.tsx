@@ -1,27 +1,53 @@
-import React from "react";
-import { PlusIcon } from "@heroicons/react/24/outline";
+/** @format */
 
-import { ChatroomType } from "../types/interfaces";
+import React, { useEffect } from "react";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { GetRoomResponse } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
+
+import { Client } from "../api/Client";
+import { ChatroomGatewayService } from "../api/protos/chatroom/v1/chatroomgateway_service_connect";
+import {
+  CreateRoomRequest,
+  GetRoomRequest,
+} from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
 const Chatroom = ({
   chatroom,
   setChatroom,
 }: {
-  chatroom: ChatroomType;
+  chatroom: string;
   setChatroom: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+  const [chatroomState, setChatroomState] = React.useState<
+    GetRoomResponse | undefined
+  >(undefined);
+  //Instantiate the client and request information
+
+  //I think the smartest thing is to reconfigure the backend to fetch all of the chatrooms in one request
+
+  /*  useEffect(() => {
+    (async function () {
+      const client = new Client(ChatroomGatewayService);
+      const req = new GetRoomRequest();
+      req.chatroomUuid = chatroom;
+      const res = (await client.fetch(req)) as GetRoomResponse | undefined;
+
+      setChatroomState(res!);
+    })();
+  }, []); */
+
   return (
     <div
       className="m-2 flex justify-center relative group shadow-inner"
       onClick={() => {
-        setChatroom(chatroom.uuid);
-        console.log("Swapped to chatroom: " + chatroom.name);
+        setChatroom(chatroomState?.chatroomUuid!);
+        console.log("Swapped to chatroom: " + chatroomState?.chatroomUuid!);
       }}
     >
       {/*   <img className="rounded-full w-16 h-16" src={chatroom.icon}></img> */}
 
       <div className="author-avatar">
-        <img src={chatroom.icon} />
+        <img src={""} />
 
         <svg className="half-circle" viewBox="0 0 106 57">
           <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
@@ -29,7 +55,7 @@ const Chatroom = ({
       </div>
 
       <div className="fixed left-20 w-auto p-3 m-4 min-w-max rounded-md shadow-md text-white bg-gradient-to-l from-red-400 to-orange-400 text-xs font-bold z-10 group-hover:scale-100 transition-all duration-100 scale-0 origin-left">
-        {chatroom.name}
+        {""}
       </div>
     </div>
   );
@@ -40,9 +66,26 @@ const Chatroom = ({
 export default Chatroom;
 
 export const CreateChatroom = () => {
+  //I need to add some onclick function here
+
+  const handleOnClick = () => {
+    console.log("Clicked");
+
+    const client = new Client(ChatroomGatewayService);
+
+    const req = new CreateRoomRequest();
+    req.name = "Default Server";
+    req.ownerUuid = "d542a0e0-48db-42f8-a1bb-0b0615821145";
+
+    client.fetch(req);
+  };
+
   return (
-    <div className="m-2 flex justify-center shadow-inner ">
-      <PlusIcon className="w-16 h-16 rounded-full bg-customgray text-customOrange" />
+    <div className="m-2 flex justify-center shadow-inner">
+      <PlusIcon
+        className="w-16 h-16 rounded-full bg-customgray text-customOrange"
+        onClick={handleOnClick}
+      />
     </div>
   );
 };
