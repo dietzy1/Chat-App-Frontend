@@ -11,16 +11,6 @@ import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 
-//TEST DATA
-import {
-  testArrayMessage,
-  testArrayUser,
-  testUser,
-  testArrayChatRoom,
-  testChatRoom,
-  testArrayChannel,
-} from "./testData";
-
 //API services
 import { ChatroomGatewayService } from "../api/protos/chatroom/v1/chatroomgateway_service_connect";
 import { UserGatewayService } from "../api/protos/user/v1/usergateway_service_connect";
@@ -50,7 +40,6 @@ import Settings from "../portals/Settings";
 //WEBSOCKET
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Unmarshal } from "../websocket/Serialize";
-import { MessageType } from "../types/interfaces";
 import { Client } from "../api/Client";
 import {
   AuthenticateRequest,
@@ -67,6 +56,11 @@ import {
   GetRoomsRequest,
   GetRoomsResponse,
 } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
+import {
+  GetMessagesRequest,
+  GetMessagesResponse,
+  Msg,
+} from "../api/protos/message/v1/messagegateway_service_pb";
 
 const Home = () => {
   const [state, dispatch] = useGlobalState();
@@ -77,13 +71,20 @@ const Home = () => {
   const ref = useRef<HTMLInputElement>(null);
 
   //State for chatrooms and channels
-  const [chatRoomState, setChatRoomState] = useState(null);
-  const [channelState, setChannelState] = useState(null);
+  const [chatroomState, setChatRoomState] = useState<
+    GetRoomsResponse | undefined
+  >(undefined);
 
   //State for users in a chatroom
   const [userState, setUserState] = useState<GetUserResponse | undefined>(
     undefined
   );
+
+  //State for messages in a channel
+  const [messageHistory, setMessageHistory] = useState([]) as any;
+  const [messageState, setMessageState] = useState<
+    GetMessagesResponse | undefined
+  >();
 
   //Chatroom and channel IDS
   const [chatroom, setChatroom] = useState("");
@@ -94,7 +95,7 @@ const Home = () => {
   //API clients
   const chatroomClient = new Client(ChatroomGatewayService);
   const userClient = new Client(UserGatewayService);
-  const accountClient = new Client(AccountGatewayService);
+  //const accountClient = new Client(AccountGatewayService);
   const messageClient = new Client(MessageGatewayService);
   const authClient = new Client(AuthGatewayService);
 
@@ -105,7 +106,6 @@ const Home = () => {
   const [socketUrl, setSocketUrl] = useState(
     "ws://localhost:8000/ws?" + "chatroom=" + chatroom + "&channel" + channel
   );
-  const [messageHistory, setMessageHistory] = useState([]) as any;
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
@@ -130,6 +130,59 @@ const Home = () => {
     })();
   }, []);
 
+  //Use effect hook that userState when the chatroom is changed (this is to get the users in the chatroom)
+  //Later I need to hook it up with a websocket connection that reports who is online
+  useEffect(() => {
+    console.log("Requesting user information...");
+    (async function () {
+      const req = new GetUserRequest();
+      req.userUuid = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("uuid_token="))
+        ?.split("=")[1]!;
+      const res = (await userClient.fetch(req)) as GetUserResponse | undefined;
+      if (typeof res !== "undefined") {
+        console.log("User information received!");
+        //Need to figure out some logic here prolly
+        console.log(res);
+        setUserState(res);
+        //TODO:
+        console.log("Requesting chatrooms...");
+      }
+    })();
+
+    console.log("Chatroom state is: ", chatroomState);
+  }, []);
+
+  //Use effect hook that requests array of chatrooms when the user logs in
+  useEffect(() => {
+    (async function () {
+      if (typeof userState?.uuid === "undefined") {
+        return;
+      }
+      const req = new GetRoomsRequest();
+      req.chatroomUuids = userState?.chatServers!;
+      const res = (await chatroomClient.fetch(req)) as
+        | GetRoomsResponse
+        | undefined;
+      if (typeof res !== "undefined") {
+        console.log("Chatrooms received!");
+        console.log(res);
+        setChatRoomState(res);
+
+        //Here we can add some default chatroom and channel upload loading
+        if (typeof channel === "undefined") {
+          setChannel(res.rooms[0].channel[0].channelUuid);
+        }
+        if (typeof chatroom === "undefined") {
+          setChatroom(res.rooms[0].chatroomUuid);
+        }
+      } else {
+        console.log("Chatrooms not received!");
+      }
+    })();
+  }, [userState?.uuid]);
+
   //Start listening for new messages
   useEffect(() => {
     if (lastMessage !== null) {
@@ -142,6 +195,20 @@ const Home = () => {
           ...messageHistory,
           message,
         ]);
+
+        const msg = new Msg();
+        msg.author = message.author;
+        msg.content = message.content;
+        msg.chatRoomUuid = message.chatroomuuid;
+        msg.authorUuid = message.authoruuid;
+        msg.channelUuid = message.channeluuid;
+        msg.messageUuid = message.messageuuid;
+        msg.timestamp = message.timestamp!;
+
+        //append msg to messageState
+        if (typeof messageState !== "undefined") {
+          messageState.messages.push(msg);
+        }
       };
       console.log(messageHistory);
     }
@@ -162,70 +229,26 @@ const Home = () => {
     setMessageHistory([]);
 
     //perform a get request to get the last 100 messages from the chatroom and channel
+    (async function () {
+      if (typeof chatroom === "undefined" || typeof channel === "undefined") {
+        return;
+      }
+      const req = new GetMessagesRequest();
+      req.channelUuid = channel;
+      req.chatRoomUuid = chatroom;
+
+      const response = (await messageClient.fetch(req)) as
+        | GetMessagesResponse
+        | undefined;
+      if (response !== undefined) {
+        console.log("Messages received!");
+        setMessageState(response);
+        console.log(response);
+      } else {
+        console.log("Messages not received!");
+      }
+    })();
   }, [chatroom, channel]);
-
-  //Use effect hook that userState when the chatroom is changed (this is to get the users in the chatroom)
-  //Later I need to hook it up with a websocket connection that reports who is online
-  useEffect(
-    () => {
-      console.log("Requesting user information...");
-      (async function () {
-        const req = new GetUserRequest();
-        req.userUuid = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("uuid_token="))
-          ?.split("=")[1]!;
-        const res = (await userClient.fetch(req)) as
-          | GetUserResponse
-          | undefined;
-        if (res !== undefined) {
-          console.log("User information received!");
-          //Need to figure out some logic here prolly
-          console.log(res);
-          setUserState(res);
-          //TODO:
-          console.log("Requesting chatrooms...");
-
-          (async function () {
-            const req = new GetRoomsRequest();
-            //req.chatroomUuids = userState?.chatServers!;
-            req.chatroomUuids = ["5cd69ca7-7fbf-4693-99a7-62ceb4e6a395"];
-            const res = (await chatroomClient.fetch(req)) as
-              | GetRoomsResponse
-              | undefined;
-            if (res !== undefined) {
-              console.log("Chatrooms received!");
-              console.log(res);
-            } else {
-              console.log("Chatrooms not received!");
-            }
-          })();
-          //TODO:
-        }
-      })();
-      console.log("User state is: ", userState);
-
-      /*   console.log("Requesting chatrooms...");
-      const req = new GetRoomsRequest();
-      req.chatroomUuids = userState?.chatServers!;
-      (async function () {
-        const res = (await chatroomClient.fetch(req)) as
-          | GetRoomsRequest
-          | undefined;
-        if (res !== undefined) {
-          console.log("Chatrooms received!");
-        }
-      })(); */
-
-      console.log("Chatroom state is: ", chatRoomState);
-    },
-    [
-      /* userState?.uuid */
-    ]
-  );
-
-  //Use effect hook that requests array of chatrooms when the user logs in
-  useEffect(() => {}, []);
 
   //Function which is called when the socket url is changed - Closes the old socket and opens a new one
   const handleClickChangeSocketUrl = useCallback(
@@ -240,14 +263,12 @@ const Home = () => {
     [chatroom, channel]
   );
 
-  //Connection statuses not implemented yet
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "Open",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "Closed",
-    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-  }[readyState];
+  /*  useEffect(() => {
+    setSocketUrl(
+      "ws://localhost:8000/ws?" + "chatroom=" + chatroom + "&channel=" + channel
+    );
+    console.log("Changed socket URL to:", socketUrl);
+  }, [chatroom, channel]); */
 
   //This function is used to send messages to the websocket
   const handleClickSendMessage = useCallback(
@@ -261,23 +282,26 @@ const Home = () => {
 
   return (
     <div className="h-screen w-screen wtf flex flex-row justify-between max-h-screen">
-      <Navbar chatroom={testChatRoom} open={open} onClose={setOpen} />
-      {/*TODO:*/}
+      {chatroomState && (
+        <Navbar
+          key={chatroomState.rooms[0].chatroomUuid}
+          chatroomState={chatroomState.rooms[0]}
+          open={open}
+          onClose={setOpen}
+        />
+      )}
 
       <div className="w-[30rem] flex flex-row">
         <div className=" flex flex-col">
           <div className="sm:w-28 h-[93vh] hidden sm:flex flex-col w-full overflow-y-scroll scrollbar-hide pt-24  justify-start  bg-blacky border-r border-gray-900">
-            {/* {userState?.chatServers &&
-              userState?.chatServers.map((chatroom) => (
-                <Chatroom chatroom={chatroom} setChatroom={setChatroom} />
-              ))} */}
-            {userState?.chatServers ? (
-              userState.chatServers.map((chatroom) => (
-                <Chatroom chatroom={chatroom} setChatroom={setChatroom} />
-              ))
-            ) : (
-              <div>loading</div>
-            )}
+            {chatroomState &&
+              chatroomState.rooms.map((chatroom) => (
+                <Chatroom
+                  chatroomState={chatroom}
+                  setChatroom={setChatroom}
+                  key={chatroom.chatroomUuid}
+                />
+              ))}
           </div>
           {/*   @ts-ignore */}
           {/*  <OpenWSConn stateYep={state} /> */}
@@ -291,11 +315,20 @@ const Home = () => {
         <div className="sm:w-full hidden sm:flex flex-col shrink bg-test  pt-28 drop-shadow-2xl border-gray-900 border-r">
           <div className="h-[92vh] flex flex-col overflow-y-scroll scrollbar-hide">
             <div>
-              <Channel channels={testArrayChannel} setChannel={setChannel} />
+              {chatroomState &&
+                chatroomState.rooms.map((chatroom, i) => (
+                  <Channel
+                    channelState={chatroom}
+                    setChannel={setChannel}
+                    key={chatroom.channel[i].channelUuid}
+                  />
+                ))}
+
+              {/*  <Channel channelState={chatroomState} setChannel={setChannel} /> */}
             </div>
           </div>
           <div className="h-[8vh] border-t bg-test mt-4">
-            {/* <User user={userState!} /> */}
+            {userState && <User user={userState!} />}
           </div>
         </div>
       </div>
@@ -306,10 +339,10 @@ const Home = () => {
       >
         {/*TODO: the magic number was mb-10 before */}
         <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-20 scrollbar-hide overflow-x-hidden max-w-[100%] pb-28">
-          {/*  {messageHistory &&
-            messageHistory.map((messageHistory: MessageType) => (
-              <Chat msg={messageHistory} user={testUser} />
-            ))} */}
+          {messageState &&
+            messageState.messages.map((msg) => (
+              <Chat msg={msg} user={userState!} key={msg.messageUuid} />
+            ))}
           <div ref={ref}></div>
         </div>
       </div>
@@ -366,7 +399,9 @@ const Home = () => {
         input={input}
         setInput={setInput}
         handleClickSendMessage={handleClickSendMessage}
-        user={testUser}
+        user={userState!}
+        channeluuid={channel}
+        chatroomuuid={chatroom}
       />
       {/* <Searchbar /> */}
       {/*REACT PORTALS */}

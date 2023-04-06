@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { DeleteMessageRequest, DeleteMessageResponse, EditMessageRequest, EditMessageResponse, GetMessagesRequest, GetMessagesResponse } from "./messagegateway_service_pb.js";
+import { CreateMessageRequest, CreateMessageResponse, DeleteMessageRequest, DeleteMessageResponse, EditMessageRequest, EditMessageResponse, GetMessagesRequest, GetMessagesResponse } from "./messagegateway_service_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -14,6 +14,15 @@ import { MethodKind } from "@bufbuild/protobuf";
 export const MessageGatewayService = {
   typeName: "messagegateway.v1.MessageGatewayService",
   methods: {
+    /**
+     * @generated from rpc messagegateway.v1.MessageGatewayService.CreateMessage
+     */
+    createMessage: {
+      name: "CreateMessage",
+      I: CreateMessageRequest,
+      O: CreateMessageResponse,
+      kind: MethodKind.Unary,
+    },
     /**
      * @generated from rpc messagegateway.v1.MessageGatewayService.GetMessages
      */

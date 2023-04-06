@@ -1,4 +1,8 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * @format
+ * @type {import('tailwindcss').Config}
+ */
+
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -11,6 +15,7 @@ module.exports = {
         textGray: "#7a7a8c",
         bggray: "#1D2127",
         test: "#1c1921",
+        idk: "#14141c",
       },
     },
   },

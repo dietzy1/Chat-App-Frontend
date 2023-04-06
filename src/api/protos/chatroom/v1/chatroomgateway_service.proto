@@ -53,7 +53,7 @@ message GetRoomResponse {
 }
 
 message Channel  {
-  string uuid = 1;
+  string channel_uuid = 1;
   string name = 2;
   string chatroom_uuid = 3;
   string owner_uuid = 4;

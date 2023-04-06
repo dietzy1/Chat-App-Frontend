@@ -1,4 +1,6 @@
-import React from "react";
+/** @format */
+
+import React, { useEffect } from "react";
 import { ChannelType, MessageType, UserType } from "../types/interfaces";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -6,7 +8,14 @@ import { CheckIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { Searchbar } from "./Searchbar";
 
-const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
+import { GetUserResponse } from "../api/protos/user/v1/usergateway_service_pb";
+import { Msg } from "../api/protos/message/v1/messagegateway_service_pb";
+
+//I think how I want this to work is that I am going to have an array of users specific to the chatserver
+//Then im going to have the message history and then it needs to map the useruuid from the message to the user in the array
+//and based on that display the icon
+
+const Chat = ({ msg, user }: { msg: Msg; user: GetUserResponse }) => {
   const [query, setQuery] = useState("");
   const onSubmit = (e: any) => {
     e.preventDefault();
@@ -37,9 +46,21 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
     console.log("editing: " + editing);
   };
 
+  //I need to find a way to map between the message and the user
+  //Combine the two and then display the icon
+  const idk = msg.authorUuid;
+  const idkk = user.uuid;
+
+  const [icon, setIcon] = useState(user.icon?.link!);
+  useEffect(() => {
+    if (idk === idkk) {
+      setIcon(user.icon?.link!);
+    }
+  }, []);
+
   return (
     <div className="mb-10 text-lg">
-      {msg.authoruuid === user.uuid && (
+      {msg.authorUuid === user.uuid && (
         <div className="flex flex-row m-2  justify-end w-full relative ">
           <div className="flex flex-col group/icon">
             <div className="flex flex-row ml-auto heading">
@@ -100,7 +121,7 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
               <img
                 className="w-12 h-12  flex-shrink-0 rounded-full border-4 border-blacky z-10"
                 alt=""
-                src={user.icon}
+                src={icon}
               ></img>
             </div>
             {/* </div> */}
@@ -115,7 +136,7 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
       )}
       {/*Breakpoint*/}
 
-      {msg.authoruuid !== user.uuid && (
+      {msg.authorUuid !== user.uuid && (
         <div className="flex flex-row m-2 justify-start w-full relative">
           <div className="flex flex-col">
             <div className="flex flex-row heading">
@@ -129,7 +150,7 @@ const Chat = ({ msg, user }: { msg: MessageType; user: UserType }) => {
                 <img
                   className="w-12 h-12  flex-shrink-0 rounded-full border-4 border-blacky z-10"
                   alt=""
-                  src={user.icon}
+                  src={icon!}
                 ></img>
               </div>
             </div>

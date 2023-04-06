@@ -69,7 +69,7 @@ export class Client {
   }
   return true;
 } */
-
+//@ts-ignore
 function validate<T extends {}>(obj: T): boolean {
   // Validate that the message fields are valid
   for (const key in obj) {

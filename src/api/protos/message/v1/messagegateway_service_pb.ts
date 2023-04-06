@@ -7,6 +7,140 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3 } from "@bufbuild/protobuf";
 
 /**
+ * @generated from message messagegateway.v1.CreateMessageRequest
+ */
+export class CreateMessageRequest extends Message<CreateMessageRequest> {
+  /**
+   * @generated from field: string author = 1;
+   */
+  author = "";
+
+  /**
+   * @generated from field: string content = 2;
+   */
+  content = "";
+
+  /**
+   * @generated from field: string author_uuid = 3;
+   */
+  authorUuid = "";
+
+  /**
+   * @generated from field: string chat_room_uuid = 4;
+   */
+  chatRoomUuid = "";
+
+  /**
+   * @generated from field: string channel_uuid = 5;
+   */
+  channelUuid = "";
+
+  constructor(data?: PartialMessage<CreateMessageRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "messagegateway.v1.CreateMessageRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "author", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "content", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "author_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "chat_room_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "channel_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateMessageRequest {
+    return new CreateMessageRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateMessageRequest {
+    return new CreateMessageRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateMessageRequest {
+    return new CreateMessageRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateMessageRequest | PlainMessage<CreateMessageRequest> | undefined, b: CreateMessageRequest | PlainMessage<CreateMessageRequest> | undefined): boolean {
+    return proto3.util.equals(CreateMessageRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message messagegateway.v1.CreateMessageResponse
+ */
+export class CreateMessageResponse extends Message<CreateMessageResponse> {
+  /**
+   * @generated from field: string author = 1;
+   */
+  author = "";
+
+  /**
+   * @generated from field: string content = 2;
+   */
+  content = "";
+
+  /**
+   * @generated from field: string author_uuid = 3;
+   */
+  authorUuid = "";
+
+  /**
+   * @generated from field: string chat_room_uuid = 4;
+   */
+  chatRoomUuid = "";
+
+  /**
+   * @generated from field: string channel_uuid = 5;
+   */
+  channelUuid = "";
+
+  /**
+   * @generated from field: string message_uuid = 6;
+   */
+  messageUuid = "";
+
+  /**
+   * @generated from field: string timestamp = 7;
+   */
+  timestamp = "";
+
+  constructor(data?: PartialMessage<CreateMessageResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "messagegateway.v1.CreateMessageResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "author", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "content", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "author_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "chat_room_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "channel_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "message_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: "timestamp", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateMessageResponse {
+    return new CreateMessageResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateMessageResponse {
+    return new CreateMessageResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateMessageResponse {
+    return new CreateMessageResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateMessageResponse | PlainMessage<CreateMessageResponse> | undefined, b: CreateMessageResponse | PlainMessage<CreateMessageResponse> | undefined): boolean {
+    return proto3.util.equals(CreateMessageResponse, a, b);
+  }
+}
+
+/**
  * @generated from message messagegateway.v1.GetMessagesRequest
  */
 export class GetMessagesRequest extends Message<GetMessagesRequest> {

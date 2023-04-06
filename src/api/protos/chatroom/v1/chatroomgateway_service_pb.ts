@@ -263,9 +263,9 @@ export class GetRoomResponse extends Message<GetRoomResponse> {
  */
 export class Channel extends Message<Channel> {
   /**
-   * @generated from field: string uuid = 1;
+   * @generated from field: string channel_uuid = 1;
    */
-  uuid = "";
+  channelUuid = "";
 
   /**
    * @generated from field: string name = 2;
@@ -290,7 +290,7 @@ export class Channel extends Message<Channel> {
   static readonly runtime = proto3;
   static readonly typeName = "chatroomgateway.v1.Channel";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "channel_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "chatroom_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "owner_uuid", kind: "scalar", T: 9 /* ScalarType.STRING */ },

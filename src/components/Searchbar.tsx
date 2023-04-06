@@ -8,32 +8,34 @@ import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { Marshal } from "../websocket/Serialize";
 import { CreateMessageRequest } from "../proto/v1/message_service_pb";
 import { MessageType, UserType } from "../types/interfaces";
+import { GetUserResponse } from "../api/protos/user/v1/usergateway_service_pb";
+import { channel } from "diagnostics_channel";
 
 export const Searchbar = ({
   input,
   setInput,
   handleClickSendMessage,
   user,
+  chatroomuuid,
+  channeluuid,
 }: {
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
   handleClickSendMessage: (msg: Uint8Array) => void;
-  user: UserType;
+  user: GetUserResponse;
+  chatroomuuid: string;
+  channeluuid: string;
 }) => {
-  //construct the message object of type MessageType
-
-  //this is still hardcoded i need to pass in the actual user information and chatroom information
   const sendInput = (e: any) => {
     e.preventDefault();
     console.log(input);
 
     const message: MessageType = {
-      author: "Bob",
+      author: user.name,
       content: input,
       authoruuid: user.uuid,
-      chatroomuuid: "4",
-      channeluuid: "6",
-      timestamp: "??",
+      chatroomuuid: chatroomuuid,
+      channeluuid: channeluuid,
     };
 
     const msg = Marshal(message);

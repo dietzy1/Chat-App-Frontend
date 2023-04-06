@@ -6,7 +6,7 @@
 import {
   CreateMessageRequest,
   CreateMessageResponse,
-} from "../proto/v1/message_service_pb";
+} from "../api/protos/message/v1/messagegateway_service_pb";
 import { MessageType } from "../types/interfaces";
 
 //TODO:this function is still implemented incorrectly
@@ -44,6 +44,7 @@ export function Unmarshal(m: Uint8Array): MessageType {
     authoruuid: msg.authorUuid,
     chatroomuuid: msg.chatRoomUuid,
     channeluuid: msg.channelUuid,
+    messageuuid: msg.messageUuid,
     timestamp: msg.timestamp,
   };
 

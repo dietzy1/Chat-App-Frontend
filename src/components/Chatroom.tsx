@@ -12,30 +12,12 @@ import {
 } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
 const Chatroom = ({
-  chatroom,
+  chatroomState,
   setChatroom,
 }: {
-  chatroom: string;
+  chatroomState: GetRoomResponse;
   setChatroom: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const [chatroomState, setChatroomState] = React.useState<
-    GetRoomResponse | undefined
-  >(undefined);
-  //Instantiate the client and request information
-
-  //I think the smartest thing is to reconfigure the backend to fetch all of the chatrooms in one request
-
-  /*  useEffect(() => {
-    (async function () {
-      const client = new Client(ChatroomGatewayService);
-      const req = new GetRoomRequest();
-      req.chatroomUuid = chatroom;
-      const res = (await client.fetch(req)) as GetRoomResponse | undefined;
-
-      setChatroomState(res!);
-    })();
-  }, []); */
-
   return (
     <div
       className="m-2 flex justify-center relative group shadow-inner"
@@ -47,7 +29,7 @@ const Chatroom = ({
       {/*   <img className="rounded-full w-16 h-16" src={chatroom.icon}></img> */}
 
       <div className="author-avatar">
-        <img src={""} />
+        <img src={chatroomState?.icon} />
 
         <svg className="half-circle" viewBox="0 0 106 57">
           <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
@@ -55,7 +37,7 @@ const Chatroom = ({
       </div>
 
       <div className="fixed left-20 w-auto p-3 m-4 min-w-max rounded-md shadow-md text-white bg-gradient-to-l from-red-400 to-orange-400 text-xs font-bold z-10 group-hover:scale-100 transition-all duration-100 scale-0 origin-left">
-        {""}
+        {chatroomState.name}
       </div>
     </div>
   );
