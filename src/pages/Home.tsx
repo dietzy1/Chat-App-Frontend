@@ -411,3 +411,11 @@ const Home = () => {
   );
 };
 export default Home;
+
+//TODO:
+//Known issues:
+// Its not correct defaulting to index 0 of the chatroom array
+
+//TODO:
+//Shit I haven't implemented yet
+//Everything
