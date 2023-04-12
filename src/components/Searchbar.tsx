@@ -6,10 +6,10 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 
 import { Marshal } from "../websocket/Serialize";
-import { CreateMessageRequest } from "../proto/v1/message_service_pb";
+
 import { MessageType, UserType } from "../types/interfaces";
 import { GetUserResponse } from "../api/protos/user/v1/usergateway_service_pb";
-import { channel } from "diagnostics_channel";
+
 
 export const Searchbar = ({
   input,

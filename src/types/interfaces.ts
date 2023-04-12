@@ -6,7 +6,7 @@ export interface MessageType {
   authoruuid: string;
   chatroomuuid: string;
   channeluuid: string;
-  messageuuid: string;
+  messageuuid?: string;
   timestamp?: string;
 }
 

@@ -81,7 +81,6 @@ const Home = () => {
   );
 
   //State for messages in a channel
-  const [messageHistory, setMessageHistory] = useState([]) as any;
   const [messageState, setMessageState] = useState<
     GetMessagesResponse | undefined
   >();
@@ -146,12 +145,8 @@ const Home = () => {
         //Need to figure out some logic here prolly
         console.log(res);
         setUserState(res);
-        //TODO:
-        console.log("Requesting chatrooms...");
       }
     })();
-
-    console.log("Chatroom state is: ", chatroomState);
   }, []);
 
   //Use effect hook that requests array of chatrooms when the user logs in
@@ -173,15 +168,33 @@ const Home = () => {
         //Here we can add some default chatroom and channel upload loading
         if (typeof channel === "undefined") {
           setChannel(res.rooms[0].channel[0].channelUuid);
+          console.log("Channel set to: ", channel);
         }
         if (typeof chatroom === "undefined") {
           setChatroom(res.rooms[0].chatroomUuid);
+          console.log("Chatroom set to: ", chatroom);
         }
       } else {
         console.log("Chatrooms not received!");
       }
     })();
   }, [userState?.uuid]);
+
+  useEffect(() => {
+    if (typeof channel === "undefined") {
+      return;
+    }
+    if (typeof chatroom === "undefined") {
+      return;
+    }
+    //TODO: This is a temporary solution to the problem of the websocket not connecting
+    setChatroom(chatroomState?.rooms[0].chatroomUuid!);
+
+    setChannel(chatroomState?.rooms[0].channel[0].channelUuid!);
+
+    console.log("Channel set to: ", channel);
+    console.log("Chatroom set to: ", chatroom);
+  }, [channel, chatroom]);
 
   //Start listening for new messages
   useEffect(() => {
@@ -191,33 +204,41 @@ const Home = () => {
       reader.onloadend = () => {
         const data = new Uint8Array(reader.result as ArrayBuffer);
         const message = Unmarshal(data);
-        setMessageHistory((messageHistory: any) => [
-          ...messageHistory,
-          message,
-        ]);
 
+        //TODO: I feel like this part is unneeded since I dont need the msg type intermediady
         const msg = new Msg();
         msg.author = message.author;
         msg.content = message.content;
         msg.chatRoomUuid = message.chatroomuuid;
         msg.authorUuid = message.authoruuid;
         msg.channelUuid = message.channeluuid;
-        msg.messageUuid = message.messageuuid;
+        msg.messageUuid = message.messageuuid!;
         msg.timestamp = message.timestamp!;
 
         //append msg to messageState
         if (typeof messageState !== "undefined") {
-          messageState.messages.push(msg);
+          setMessageState((messageState) => {
+            if (typeof messageState === "undefined") {
+              return;
+            }
+            return {
+              ...messageState, // Merge existing state with new messages array
+              messages: [...messageState.messages, msg],
+            } as GetMessagesResponse;
+          });
+
+          console.log("Message received!");
+          console.log(messageState);
+          //I think I need some sort of function here which filters the messages for dubplicates and then sets the message state
         }
       };
-      console.log(messageHistory);
     }
     ref!.current!.scrollIntoView({
       behavior: "smooth",
       block: "start",
       inline: "nearest",
     });
-  }, [lastMessage, setMessageHistory]);
+  }, [lastMessage, setMessageState]);
 
   //UseEffect hook that updates the socket url when the chatroom or channel is changed
   useEffect(() => {
@@ -226,7 +247,7 @@ const Home = () => {
     console.log(socketUrl);
 
     //Reset the message history
-    setMessageHistory([]);
+    setMessageState(undefined);
 
     //perform a get request to get the last 100 messages from the chatroom and channel
     (async function () {
@@ -248,37 +269,44 @@ const Home = () => {
         console.log("Messages not received!");
       }
     })();
+    //scroll to the bottum of the chat using ref
   }, [chatroom, channel]);
 
-  //Function which is called when the socket url is changed - Closes the old socket and opens a new one
-  const handleClickChangeSocketUrl = useCallback(
-    () =>
-      setSocketUrl(
-        "ws://localhost:8000/ws?" +
-          "chatroom=" +
-          chatroom +
-          "&channel=" +
-          channel
-      ),
-    [chatroom, channel]
-  );
+  useEffect(() => {
+    ref!.current!.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
+  }, [messageState]);
 
-  /*  useEffect(() => {
+  //Function which is called when the socket url is changed - Closes the old socket and opens a new one
+  const handleClickChangeSocketUrl = useCallback(() => {
+    if (chatroom === undefined) {
+      console.log("Chatroom is undefined");
+      return;
+    }
+    if (!channel === undefined) {
+      console.log("Channel is undefined");
+      return;
+    }
     setSocketUrl(
-      "ws://localhost:8000/ws?" + "chatroom=" + chatroom + "&channel=" + channel
+      "ws://localhost:8000/ws?" +
+        "chatroom=" +
+        chatroom +
+        "&channel=" +
+        channel +
+        "&user=" +
+        userState?.uuid
     );
     console.log("Changed socket URL to:", socketUrl);
-  }, [chatroom, channel]); */
+  }, [chatroom, channel]);
 
   //This function is used to send messages to the websocket
   const handleClickSendMessage = useCallback(
     (msg: Uint8Array) => sendMessage(msg, true),
     []
   );
-
-  //If user is not authenticated navigate back to login page
-
-  //The issue is that
 
   return (
     <div className="h-screen w-screen wtf flex flex-row justify-between max-h-screen">
@@ -415,6 +443,7 @@ export default Home;
 //TODO:
 //Known issues:
 // Its not correct defaulting to index 0 of the chatroom array
+//Not scrolling to the botton on reload
 
 //TODO:
 //Shit I haven't implemented yet

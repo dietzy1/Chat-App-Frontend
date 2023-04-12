@@ -53,6 +53,19 @@ const Chat = ({ msg, user }: { msg: Msg; user: GetUserResponse }) => {
 
   const [icon, setIcon] = useState(user.icon?.link!);
   useEffect(() => {
+    console.log(user);
+    console.log("idk: " + idk);
+    console.log("idkk: " + idkk);
+
+    //Loop over user array and look for match with idk
+    //if match then set icon to user.icon.link
+    for (let i = 0; i < user.length; i++) {
+      if (user[i].uuid === idk) {
+        setIcon(user[i].icon?.link!);
+        break;
+      }
+    }
+
     if (idk === idkk) {
       setIcon(user.icon?.link!);
     }

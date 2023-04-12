@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ChangeAvatarRequest, ChangeAvatarResponse, EditDescriptionRequest, EditDescriptionResponse, GetAvatarsRequest, GetAvatarsResponse, GetUserRequest, GetUserResponse } from "./usergateway_service_pb.js";
+import { ChangeAvatarRequest, ChangeAvatarResponse, EditDescriptionRequest, EditDescriptionResponse, GetAvatarsRequest, GetAvatarsResponse, GetUserRequest, GetUserResponse, GetUsersRequest, GetUsersResponse } from "./usergateway_service_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -19,6 +19,15 @@ export const UserGatewayService = {
       name: "GetUser",
       I: GetUserRequest,
       O: GetUserResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc usergateway.v1.UserGatewayService.GetUsers
+     */
+    getUsers: {
+      name: "GetUsers",
+      I: GetUsersRequest,
+      O: GetUsersResponse,
       kind: MethodKind.Unary,
     },
     /**

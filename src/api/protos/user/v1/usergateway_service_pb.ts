@@ -111,6 +111,80 @@ export class GetUserResponse extends Message<GetUserResponse> {
 }
 
 /**
+ * @generated from message usergateway.v1.GetUsersRequest
+ */
+export class GetUsersRequest extends Message<GetUsersRequest> {
+  /**
+   * @generated from field: repeated string user_uuids = 1;
+   */
+  userUuids: string[] = [];
+
+  constructor(data?: PartialMessage<GetUsersRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "usergateway.v1.GetUsersRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "user_uuids", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUsersRequest {
+    return new GetUsersRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUsersRequest {
+    return new GetUsersRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUsersRequest {
+    return new GetUsersRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetUsersRequest | PlainMessage<GetUsersRequest> | undefined, b: GetUsersRequest | PlainMessage<GetUsersRequest> | undefined): boolean {
+    return proto3.util.equals(GetUsersRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message usergateway.v1.GetUsersResponse
+ */
+export class GetUsersResponse extends Message<GetUsersResponse> {
+  /**
+   * @generated from field: repeated usergateway.v1.GetUserResponse users = 1;
+   */
+  users: GetUserResponse[] = [];
+
+  constructor(data?: PartialMessage<GetUsersResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "usergateway.v1.GetUsersResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "users", kind: "message", T: GetUserResponse, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUsersResponse {
+    return new GetUsersResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUsersResponse {
+    return new GetUsersResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUsersResponse {
+    return new GetUsersResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetUsersResponse | PlainMessage<GetUsersResponse> | undefined, b: GetUsersResponse | PlainMessage<GetUsersResponse> | undefined): boolean {
+    return proto3.util.equals(GetUsersResponse, a, b);
+  }
+}
+
+/**
  * @generated from message usergateway.v1.EditDescriptionRequest
  */
 export class EditDescriptionRequest extends Message<EditDescriptionRequest> {
