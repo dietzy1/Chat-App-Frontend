@@ -19,7 +19,10 @@ import { AccountGatewayService } from "../api/protos/account/v1/accountgateway_s
 import { AuthGatewayService } from "../api/protos/auth/v1/authgateway_service_connect";
 
 //API requests
-import { GetRoomRequest } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
+import {
+  Activity,
+  GetRoomRequest,
+} from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 import { GetRoomResponse } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
 //COMPONENTS
@@ -39,7 +42,7 @@ import Settings from "../portals/Settings";
 
 //WEBSOCKET
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { Unmarshal } from "../websocket/Serialize";
+import { Unmarshal, decodeMessage } from "../websocket/Serialize";
 import { Client } from "../api/Client";
 import {
   AuthenticateRequest,
@@ -50,6 +53,8 @@ import {
 import {
   GetUserRequest,
   GetUserResponse,
+  GetUsersRequest,
+  GetUsersResponse,
 } from "../api/protos/user/v1/usergateway_service_pb";
 
 import {
@@ -57,6 +62,7 @@ import {
   GetRoomsResponse,
 } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 import {
+  CreateMessageResponse,
   GetMessagesRequest,
   GetMessagesResponse,
   Msg,
@@ -75,8 +81,13 @@ const Home = () => {
     GetRoomsResponse | undefined
   >(undefined);
 
-  //State for users in a chatroom
+  //State for user itself
   const [userState, setUserState] = useState<GetUserResponse | undefined>(
+    undefined
+  );
+
+  //Const to control users in a chatroom
+  const [usersState, setUsersState] = useState<GetUsersResponse | undefined>(
     undefined
   );
 
@@ -84,6 +95,11 @@ const Home = () => {
   const [messageState, setMessageState] = useState<
     GetMessagesResponse | undefined
   >();
+
+  //State for activity in a chatroom
+  const [activityState, setActivityState] = useState<Activity | undefined>(
+    undefined
+  );
 
   //Chatroom and channel IDS
   const [chatroom, setChatroom] = useState("");
@@ -94,7 +110,7 @@ const Home = () => {
   //API clients
   const chatroomClient = new Client(ChatroomGatewayService);
   const userClient = new Client(UserGatewayService);
-  //const accountClient = new Client(AccountGatewayService);
+  const accountClient = new Client(AccountGatewayService);
   const messageClient = new Client(MessageGatewayService);
   const authClient = new Client(AuthGatewayService);
 
@@ -103,7 +119,13 @@ const Home = () => {
   const [openSettings, setOpenSettings] = React.useState(false);
 
   const [socketUrl, setSocketUrl] = useState(
-    "ws://localhost:8000/ws?" + "chatroom=" + chatroom + "&channel" + channel
+    "ws://localhost:8000/ws?" +
+      "chatroom=" +
+      chatroom +
+      "&channel" +
+      channel +
+      "&user=" +
+      userState?.uuid
   );
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
@@ -203,33 +225,34 @@ const Home = () => {
       reader.readAsArrayBuffer(lastMessage.data);
       reader.onloadend = () => {
         const data = new Uint8Array(reader.result as ArrayBuffer);
-        const message = Unmarshal(data);
 
-        //TODO: I feel like this part is unneeded since I dont need the msg type intermediady
-        const msg = new Msg();
-        msg.author = message.author;
-        msg.content = message.content;
-        msg.chatRoomUuid = message.chatroomuuid;
-        msg.authorUuid = message.authoruuid;
-        msg.channelUuid = message.channeluuid;
-        msg.messageUuid = message.messageuuid!;
-        msg.timestamp = message.timestamp!;
+        console.log("Reciving input from the websocket");
 
-        //append msg to messageState
-        if (typeof messageState !== "undefined") {
-          setMessageState((messageState) => {
-            if (typeof messageState === "undefined") {
-              return;
-            }
-            return {
-              ...messageState, // Merge existing state with new messages array
-              messages: [...messageState.messages, msg],
-            } as GetMessagesResponse;
-          });
+        const decoded = decodeMessage(data);
+        console.log(decoded);
+        if (decoded instanceof CreateMessageResponse) {
+          //append msg to messageState
+          if (typeof messageState !== "undefined") {
+            setMessageState((messageState) => {
+              if (typeof messageState === "undefined") {
+                return;
+              }
+              return {
+                ...messageState, // Merge existing state with new messages array
+                messages: [...messageState.messages, decoded],
+              } as GetMessagesResponse;
+            });
 
-          console.log("Message received!");
-          console.log(messageState);
-          //I think I need some sort of function here which filters the messages for dubplicates and then sets the message state
+            console.log("Message received!");
+            console.log(messageState);
+            //I think I need some sort of function here which filters the messages for dubplicates and then sets the message state
+          }
+        } else if (decoded instanceof Activity) {
+          console.log("YES THIS IS OF TYPE ACTIVITY");
+          //Append activity to activityState
+
+          setActivityState(decoded);
+          console.log("Activity received!");
         }
       };
     }
@@ -238,7 +261,7 @@ const Home = () => {
       block: "start",
       inline: "nearest",
     });
-  }, [lastMessage, setMessageState]);
+  }, [lastMessage, setMessageState, setActivityState]);
 
   //UseEffect hook that updates the socket url when the chatroom or channel is changed
   useEffect(() => {
@@ -271,6 +294,39 @@ const Home = () => {
     })();
     //scroll to the bottum of the chat using ref
   }, [chatroom, channel]);
+
+  //Use effect hook that loads in the users in the chatroom
+  useEffect(() => {
+    (async function () {
+      if (typeof chatroom === "undefined") {
+        return;
+      }
+      const req = new GetUsersRequest();
+      let userUuids: string[] = [];
+
+      //I need to identify which chatroom is currently selected and use that ID to get the users in that chatroom
+      chatroomState?.rooms?.forEach((room) => {
+        if (room.chatroomUuid === chatroom) {
+          userUuids = room.userUuids;
+        }
+      });
+
+      console.log("Requesting user uuids: ", userUuids);
+
+      req.userUuids = userUuids;
+
+      const response = (await userClient.fetch(req)) as
+        | GetUsersResponse
+        | undefined;
+      if (response !== undefined) {
+        console.log("Users received!");
+        setUsersState(response);
+        console.log(response);
+      } else {
+        console.log("Users not received!");
+      }
+    })();
+  }, [chatroom]);
 
   useEffect(() => {
     ref!.current!.scrollIntoView({
@@ -310,10 +366,28 @@ const Home = () => {
 
   return (
     <div className="h-screen w-screen wtf flex flex-row justify-between max-h-screen">
-      {chatroomState && (
+      {/* {chatroomState && (
         <Navbar
           key={chatroomState.rooms[0].chatroomUuid}
           chatroomState={chatroomState.rooms[0]}
+          open={open}
+          onClose={setOpen}
+        />
+      )} */}
+      {chatroomState && (
+        <Navbar
+          key={
+            (
+              chatroomState.rooms.find(
+                (room) => room.chatroomUuid === chatroom
+              ) as GetRoomResponse
+            ).chatroomUuid
+          }
+          chatroomState={
+            chatroomState.rooms.find(
+              (room) => room.chatroomUuid === chatroom
+            ) as GetRoomResponse
+          }
           open={open}
           onClose={setOpen}
         />
@@ -368,8 +442,9 @@ const Home = () => {
         {/*TODO: the magic number was mb-10 before */}
         <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-20 scrollbar-hide overflow-x-hidden max-w-[100%] pb-28">
           {messageState &&
+            usersState &&
             messageState.messages.map((msg) => (
-              <Chat msg={msg} user={userState!} key={msg.messageUuid} />
+              <Chat msg={msg} user={usersState!} key={msg.messageUuid} />
             ))}
           <div ref={ref}></div>
         </div>
@@ -380,18 +455,35 @@ const Home = () => {
         {/*  <div className=" flex flex-row sm:visible invisible pb-1 mb-4"></div> */}
         <div className="h-[92rem]">
           <span className="text-2xl font-semibold text-white flex flex-col w-full">
-            <span className=" max-w-xs ml-auto w-64">{"Online - 5"}</span>
+            <span className=" max-w-xs ml-auto w-64">
+              {"Online - " + activityState?.onlineUsers.length!}
+            </span>
           </span>
 
           <div className="w-[100%] ">
-            {/*  {testArrayUser &&
-              testArrayUser.map((test) => <Online props={test} />)} */}
+            {activityState?.onlineUsers &&
+              usersState?.users &&
+              activityState.onlineUsers.map((ac, i) => (
+                <Online activity={ac} users={usersState!} key={i} />
+              ))}
 
             <span className="text-2xl font-semibold text-white flex flex-col w-full">
-              <span className="max-w-xs ml-auto w-64"> {"Offline - 2"}</span>
+              <span className="max-w-xs ml-auto w-64">
+                {" "}
+                {"Offline - " +
+                  (usersState?.users.length! -
+                    activityState?.onlineUsers.length!)}
+              </span>
             </span>
-            {/*   {testArrayUser &&
-              testArrayUser.map((test) => <Offline props={test} />)} */}
+            {activityState?.onlineUsers &&
+              usersState?.users &&
+              usersState.users
+                .filter(
+                  (user) => !activityState.onlineUsers.includes(user.uuid)
+                )
+                .map((user, i) => (
+                  <Offline /* activity={activityState} */ user={user} key={i} />
+                ))}
           </div>
         </div>
         <div className="h-[8vh]">
@@ -424,8 +516,8 @@ const Home = () => {
       </div>
 
       <Searchbar
-        input={input}
-        setInput={setInput}
+        /* input={input}
+        setInput={setInput} */
         handleClickSendMessage={handleClickSendMessage}
         user={userState!}
         channeluuid={channel}

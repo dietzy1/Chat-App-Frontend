@@ -124,3 +124,7 @@ message AddUserRequest {
 message AddUserResponse {}
 
 // -- ------------------------------------------------------------------------------
+
+message Activity {
+  repeated string online_users = 1;
+}

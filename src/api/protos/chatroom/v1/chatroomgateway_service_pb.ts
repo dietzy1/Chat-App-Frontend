@@ -879,3 +879,40 @@ export class AddUserResponse extends Message<AddUserResponse> {
   }
 }
 
+/**
+ * @generated from message chatroomgateway.v1.Activity
+ */
+export class Activity extends Message<Activity> {
+  /**
+   * @generated from field: repeated string online_users = 1;
+   */
+  onlineUsers: string[] = [];
+
+  constructor(data?: PartialMessage<Activity>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime = proto3;
+  static readonly typeName = "chatroomgateway.v1.Activity";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "online_users", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Activity {
+    return new Activity().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Activity {
+    return new Activity().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Activity {
+    return new Activity().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Activity | PlainMessage<Activity> | undefined, b: Activity | PlainMessage<Activity> | undefined): boolean {
+    return proto3.util.equals(Activity, a, b);
+  }
+}
+

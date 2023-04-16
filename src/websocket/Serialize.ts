@@ -9,6 +9,9 @@ import {
 } from "../api/protos/message/v1/messagegateway_service_pb";
 import { MessageType } from "../types/interfaces";
 
+import { Activity } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
+import { error } from "console";
+
 //TODO:this function is still implemented incorrectly
 //Marshal into the protobuf format
 export function Marshal(m: MessageType): Uint8Array {
@@ -49,6 +52,24 @@ export function Unmarshal(m: Uint8Array): MessageType {
   };
 
   return message;
+}
+
+export function decodeMessage(
+  buffer: Uint8Array
+): CreateMessageResponse | Activity {
+  try {
+    const msg = new CreateMessageResponse();
+
+    msg.fromBinary(buffer);
+
+    if (msg.chatRoomUuid === "") throw Error();
+
+    return msg;
+  } catch (e) {
+    const ac = new Activity();
+    ac.fromBinary(buffer);
+    return ac;
+  }
 }
 
 //validate the protobuf message

@@ -10,22 +10,22 @@ import { Marshal } from "../websocket/Serialize";
 import { MessageType, UserType } from "../types/interfaces";
 import { GetUserResponse } from "../api/protos/user/v1/usergateway_service_pb";
 
-
 export const Searchbar = ({
-  input,
-  setInput,
+  /* input,
+  setInput, */
   handleClickSendMessage,
   user,
   chatroomuuid,
   channeluuid,
 }: {
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
+  /*  input: string;
+  setInput: React.Dispatch<React.SetStateAction<string>>; */
   handleClickSendMessage: (msg: Uint8Array) => void;
   user: GetUserResponse;
   chatroomuuid: string;
   channeluuid: string;
 }) => {
+  const [input, setInput] = React.useState<string>("");
   const sendInput = (e: any) => {
     e.preventDefault();
     console.log(input);
