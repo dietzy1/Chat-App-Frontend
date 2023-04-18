@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useMemo } from "react";
 import "../App.css";
 import { defaultGlobalStateType, useGlobalState } from "../context/context";
 import { Navigate } from "react-router-dom";
@@ -67,24 +67,81 @@ import {
   GetMessagesResponse,
   Msg,
 } from "../api/protos/message/v1/messagegateway_service_pb";
+import { options } from "../websocket/options";
 
-const Home = () => {
+export function HomePage() {
+  //State containing user ID
+  const [userState, setUserState] = useState<GetUserResponse | undefined>(
+    undefined
+  );
+
+  const authClient = new Client(AuthGatewayService);
+  const userClient = new Client(UserGatewayService);
+
+  const [state, dispatch] = useGlobalState();
+  const navigate = useNavigate();
+
+  //Request authentication
+  //useEffect hook to handle authentication and redirecting to login page if not authenticated
+  useEffect(() => {
+    console.log("Authenticating...");
+    (async function () {
+      const req = new AuthenticateRequest();
+      const response = (await authClient.fetch(req)) as
+        | AuthenticateResponse
+        | undefined;
+      if (response !== undefined) {
+        console.log("Authenticated!");
+        navigate("/");
+        dispatch({ user: true });
+      } else {
+        console.log("Not authenticated!");
+        navigate("/login");
+        dispatch({ user: false });
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    console.log("Requesting user information...");
+    (async function () {
+      const req = new GetUserRequest();
+      req.userUuid = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("uuid_token="))
+        ?.split("=")[1]!;
+      const res = (await userClient.fetch(req)) as GetUserResponse | undefined;
+      if (typeof res !== "undefined") {
+        console.log("User information received!");
+        //Need to figure out some logic here prolly
+        console.log(res);
+        setUserState(res);
+      }
+    })();
+  }, []);
+
+  //If we fail to load user information, return an empty div
+  //TODO: Implement a loading screen
+  if (userState === undefined) {
+    return <div></div>;
+  }
+
+  //If we are authenticated and know the userState return the home page., return the home page
+  return <Home userState={userState}></Home>;
+}
+export default HomePage;
+
+export function Home({ userState }: { userState: GetUserResponse }) {
   const [state, dispatch] = useGlobalState();
   const [open, setOpen] = React.useState(false);
 
   //Searchbar logic and state
-  const [input, setInput] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 
   //State for chatrooms and channels
   const [chatroomState, setChatRoomState] = useState<
     GetRoomsResponse | undefined
   >(undefined);
-
-  //State for user itself
-  const [userState, setUserState] = useState<GetUserResponse | undefined>(
-    undefined
-  );
 
   //Const to control users in a chatroom
   const [usersState, setUsersState] = useState<GetUsersResponse | undefined>(
@@ -96,14 +153,18 @@ const Home = () => {
     GetMessagesResponse | undefined
   >();
 
-  //State for activity in a chatroom
+  //State for activity in a channel
   const [activityState, setActivityState] = useState<Activity | undefined>(
     undefined
   );
 
   //Chatroom and channel IDS
-  const [chatroom, setChatroom] = useState("");
-  const [channel, setChannel] = useState("");
+  const [chatroom, setChatroom] = useState(
+    "5cd69ca7-7fbf-4693-99a7-62ceb4e6a395"
+  );
+  const [channel, setChannel] = useState(
+    "ce83fcaf-e1e1-43d7-9c28-1983b19b8ed8"
+  );
 
   const navigate = useNavigate();
 
@@ -125,63 +186,28 @@ const Home = () => {
       "&channel" +
       channel +
       "&user=" +
-      userState?.uuid
+      userState.uuid
   );
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
-
-  //useEffect hook to handle authentication and redirecting to login page if not authenticated
-  useEffect(() => {
-    console.log("Authenticating...");
-    (async function () {
-      const req = new AuthenticateRequest();
-      const response = (await authClient.fetch(req)) as
-        | AuthenticateResponse
-        | undefined;
-      if (response !== undefined) {
-        console.log("Authenticated!");
-        navigate("/");
-        dispatch({ user: true });
-      } else {
-        console.log("Not authenticated!");
-        navigate("/login");
-        dispatch({ user: false });
-      }
-      console.log("Current state of user logged in is: ", state.user);
-    })();
-  }, []);
-
-  //Use effect hook that userState when the chatroom is changed (this is to get the users in the chatroom)
-  //Later I need to hook it up with a websocket connection that reports who is online
-  useEffect(() => {
-    console.log("Requesting user information...");
-    (async function () {
-      const req = new GetUserRequest();
-      req.userUuid = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("uuid_token="))
-        ?.split("=")[1]!;
-      const res = (await userClient.fetch(req)) as GetUserResponse | undefined;
-      if (typeof res !== "undefined") {
-        console.log("User information received!");
-        //Need to figure out some logic here prolly
-        console.log(res);
-        setUserState(res);
-      }
-    })();
-  }, []);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
+    socketUrl,
+    options
+  );
 
   //Use effect hook that requests array of chatrooms when the user logs in
   useEffect(() => {
     (async function () {
-      if (typeof userState?.uuid === "undefined") {
+      /* if (typeof userState?.uuid === "undefined") {
         return;
-      }
+      } */
+      console.log("Requesting chatrooms...");
+
       const req = new GetRoomsRequest();
-      req.chatroomUuids = userState?.chatServers!;
+      req.chatroomUuids = userState.chatServers;
       const res = (await chatroomClient.fetch(req)) as
         | GetRoomsResponse
         | undefined;
+
       if (typeof res !== "undefined") {
         console.log("Chatrooms received!");
         console.log(res);
@@ -200,9 +226,45 @@ const Home = () => {
         console.log("Chatrooms not received!");
       }
     })();
-  }, [userState?.uuid]);
+  }, []);
 
+  //Use effect hook that loads in the users in the chatroom
   useEffect(() => {
+    (async function () {
+      if (typeof chatroom === "undefined") {
+        return;
+      }
+      if (typeof chatroomState === "undefined") {
+        return;
+      }
+
+      let userUuids: string[] = [];
+
+      //I need to identify which chatroom is currently selected and use that ID to get the users in that chatroom
+      chatroomState?.rooms?.forEach((room) => {
+        if (room.chatroomUuid === chatroom) {
+          userUuids = room.userUuids;
+        }
+      });
+
+      const req = new GetUsersRequest();
+      req.userUuids = userUuids;
+      console.log("Requesting user uuids: ", userUuids);
+
+      const response = (await userClient.fetch(req)) as
+        | GetUsersResponse
+        | undefined;
+      if (response !== undefined) {
+        console.log("Users received!");
+        setUsersState(response);
+        console.log(response);
+      } else {
+        console.log("Users not received!");
+      }
+    })();
+  }, [setChatRoomState, chatroomState]);
+
+  /* useEffect(() => {
     if (typeof channel === "undefined") {
       return;
     }
@@ -211,12 +273,11 @@ const Home = () => {
     }
     //TODO: This is a temporary solution to the problem of the websocket not connecting
     setChatroom(chatroomState?.rooms[0].chatroomUuid!);
-
     setChannel(chatroomState?.rooms[0].channel[0].channelUuid!);
 
     console.log("Channel set to: ", channel);
     console.log("Chatroom set to: ", chatroom);
-  }, [channel, chatroom]);
+  }, [channel, chatroom]);  */
 
   //Start listening for new messages
   useEffect(() => {
@@ -251,6 +312,7 @@ const Home = () => {
           console.log("YES THIS IS OF TYPE ACTIVITY");
           //Append activity to activityState
 
+          //TODO:
           setActivityState(decoded);
           console.log("Activity received!");
         }
@@ -295,39 +357,6 @@ const Home = () => {
     //scroll to the bottum of the chat using ref
   }, [chatroom, channel]);
 
-  //Use effect hook that loads in the users in the chatroom
-  useEffect(() => {
-    (async function () {
-      if (typeof chatroom === "undefined") {
-        return;
-      }
-      const req = new GetUsersRequest();
-      let userUuids: string[] = [];
-
-      //I need to identify which chatroom is currently selected and use that ID to get the users in that chatroom
-      chatroomState?.rooms?.forEach((room) => {
-        if (room.chatroomUuid === chatroom) {
-          userUuids = room.userUuids;
-        }
-      });
-
-      console.log("Requesting user uuids: ", userUuids);
-
-      req.userUuids = userUuids;
-
-      const response = (await userClient.fetch(req)) as
-        | GetUsersResponse
-        | undefined;
-      if (response !== undefined) {
-        console.log("Users received!");
-        setUsersState(response);
-        console.log(response);
-      } else {
-        console.log("Users not received!");
-      }
-    })();
-  }, [chatroom]);
-
   useEffect(() => {
     ref!.current!.scrollIntoView({
       behavior: "smooth",
@@ -337,6 +366,7 @@ const Home = () => {
   }, [messageState]);
 
   //Function which is called when the socket url is changed - Closes the old socket and opens a new one
+
   const handleClickChangeSocketUrl = useCallback(() => {
     if (chatroom === undefined) {
       console.log("Chatroom is undefined");
@@ -359,21 +389,38 @@ const Home = () => {
   }, [chatroom, channel]);
 
   //This function is used to send messages to the websocket
-  const handleClickSendMessage = useCallback(
+  /*   const handleClickSendMessage = useCallback(
     (msg: Uint8Array) => sendMessage(msg, true),
     []
+  ); */
+
+  const handleClickSendMessage = useCallback(
+    (msg: Uint8Array) => {
+      console.log(readyState);
+      if (readyState === WebSocket.OPEN) {
+        sendMessage(msg, true);
+      } else {
+        console.log("Websocket is not open");
+
+        //Reconnect to the websocket
+        handleClickChangeSocketUrl();
+        //save the chatroom and channel ids
+
+        //Set the chatroom and channel ids to the saved ones
+
+        setTimeout(() => {
+          //@ts-ignore
+          if (readyState !== WebSocket.OPEN) {
+            sendMessage(msg, true);
+          }
+        }, 1000); // retry sending message after 1 second
+      }
+    },
+    [readyState, sendMessage]
   );
 
   return (
     <div className="h-screen w-screen wtf flex flex-row justify-between max-h-screen">
-      {/* {chatroomState && (
-        <Navbar
-          key={chatroomState.rooms[0].chatroomUuid}
-          chatroomState={chatroomState.rooms[0]}
-          open={open}
-          onClose={setOpen}
-        />
-      )} */}
       {chatroomState && (
         <Navbar
           key={
@@ -405,8 +452,7 @@ const Home = () => {
                 />
               ))}
           </div>
-          {/*   @ts-ignore */}
-          {/*  <OpenWSConn stateYep={state} /> */}
+
           <div className="h-[7vh] flex border-gray-900 drop-shadow-2xl mx-auto z-20">
             {/* <ArrowLeftOnRectangleIcon className="text-white w-10 h-10 my-auto mx-auto" /> */}
 
@@ -444,7 +490,12 @@ const Home = () => {
           {messageState &&
             usersState &&
             messageState.messages.map((msg) => (
-              <Chat msg={msg} user={usersState!} key={msg.messageUuid} />
+              <Chat
+                msg={msg}
+                user={userState!}
+                users={usersState!}
+                key={msg.messageUuid}
+              />
             ))}
           <div ref={ref}></div>
         </div>
@@ -516,21 +567,18 @@ const Home = () => {
       </div>
 
       <Searchbar
-        /* input={input}
-        setInput={setInput} */
         handleClickSendMessage={handleClickSendMessage}
         user={userState!}
         channeluuid={channel}
         chatroomuuid={chatroom}
       />
-      {/* <Searchbar /> */}
+
       {/*REACT PORTALS */}
       <Account open={openAccount} onClose={() => setOpen(false)} />
       <Settings open={openSettings} onClose={() => setOpen(false)} />
     </div>
   );
-};
-export default Home;
+}
 
 //TODO:
 //Known issues:

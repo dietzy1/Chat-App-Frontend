@@ -53,19 +53,18 @@ export const CreateChatroom = () => {
   const handleOnClick = () => {
     console.log("Clicked");
 
-    const client = new Client(ChatroomGatewayService);
+    /*    const client = new Client(ChatroomGatewayService);
 
     const req = new CreateRoomRequest();
     req.name = "Default Server";
     req.ownerUuid = "d542a0e0-48db-42f8-a1bb-0b0615821145";
-
-    client.fetch(req);
+    client.fetch(req); */
   };
 
   return (
     <div className="m-2 flex justify-center shadow-inner">
       <PlusIcon
-        className="w-16 h-16 rounded-full bg-customgray text-customOrange"
+        className="w-14 h-14 rounded-full bg-customgray text-customOrange"
         onClick={handleOnClick}
       />
     </div>

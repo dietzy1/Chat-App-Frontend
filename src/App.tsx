@@ -1,29 +1,21 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import "./App.css";
-import Home from "./pages/Home";
+/** @format */
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import "./App.css";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
 import React from "react";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 
 import { useGlobalState } from "./context/context";
-
-//Need to implement lazy loading
 
 const Loading = () => <p>Loading ...</p>;
 
 function App() {
-  const [state] = useGlobalState();
+  //const [state] = useGlobalState();
   return (
     <div>
       <React.Suspense fallback={<Loading />}>
@@ -32,15 +24,15 @@ function App() {
             <Route
               path="/"
               element={
-                <Home />
+                <HomePage />
                 /*    <ProtectedRoute user={state.user}>
                   <Home />
                 </ProtectedRoute> */
               }
             />
 
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
           </Routes>
         </Router>
       </React.Suspense>

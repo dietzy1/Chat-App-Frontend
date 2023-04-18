@@ -1,3 +1,5 @@
+/** @format */
+
 interface WsOptions {
   share?: boolean;
   shouldReconnect?: (event: WebSocketEventMap["close"]) => boolean;
@@ -20,19 +22,9 @@ interface WsOptions {
 
 //create a constructor object for the Options interface
 export const options: WsOptions = {
-  share: false,
   shouldReconnect: () => true,
-  reconnectInterval: 1000,
-  reconnectAttempts: 10,
-  filter: () => true,
+  reconnectInterval: 5000,
+  reconnectAttempts: 30,
+
   retryOnError: true,
-  onOpen: () => {},
-  onClose: () => {},
-  onMessage: () => {},
-  onError: () => {},
-  onReconnectStop: () => {},
-  fromSocketIO: false,
-  queryParams: {},
-  protocols: [],
-  eventSourceOptions: {},
 };

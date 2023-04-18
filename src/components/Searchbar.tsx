@@ -9,10 +9,12 @@ import { Marshal } from "../websocket/Serialize";
 
 import { MessageType, UserType } from "../types/interfaces";
 import { GetUserResponse } from "../api/protos/user/v1/usergateway_service_pb";
+import { ReadyStateState } from "react-use-websocket/dist/lib/types";
 
 export const Searchbar = ({
   /* input,
   setInput, */
+
   handleClickSendMessage,
   user,
   chatroomuuid,
@@ -43,6 +45,7 @@ export const Searchbar = ({
     setInput("");
     e.target.reset();
     handleClickSendMessage(msg);
+
     // I might need to pass in the websocket send Function here
   };
 
