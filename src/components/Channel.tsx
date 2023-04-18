@@ -2,6 +2,7 @@
 
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { HashtagIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 import React from "react";
 import {
@@ -16,17 +17,24 @@ const Channel = ({
   channelState: GetRoomResponse;
   setChannel: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+  //Onclick function for creating new channel
+
   //Based on which ever server is clicked I need to send the index of the array to the server
   channelState.channel;
   return (
     <div className="shadow-inner">
       <div className="border-b">
-        <div className="ml-6 mt-6 mb-4 text-xl ">{channelState.name}</div>
+        <div className="ml-2 mt-6 mb-4 text-l ">{channelState.name}</div>
       </div>
 
-      <div className="flex flex-row ml-6 mt-8">
-        <ChevronDownIcon className="h-6 w-6 text-white mr-2" />
-        <div className="text-gray-500">CHANNEL</div>
+      <div className="flex flex-row mt-8">
+        <div className="flex flex-row ml-2">
+          <ChevronDownIcon className="h-5 w-5 text-white mr-2 " />
+          <div className="text-gray-500">CHANNEL</div>
+        </div>
+        <div className="flex flex-row w-full justify-end mr-2">
+          <PlusIcon className="text-white w-5 h-5" />
+        </div>
       </div>
       <div>
         {channelState &&
@@ -53,14 +61,14 @@ const MapChannel = ({
 }) => {
   return (
     <div
-      className="flex flex-row mx-4 rounded p-2 items-center hover:bg-white hover:text-blacky text-lg"
+      className="flex flex-row mx-1 rounded p-2 items-center hover:bg-white hover:text-blacky text-lg"
       onClick={() => {
         setChannel(channelState?.channelUuid!);
         console.log("Swapped to channel: " + channelState?.channelUuid!);
       }}
     >
       <HashtagIcon className="h-4 w-4 text-customOrange" />
-      <div className="ml-4">{channelState?.name}</div>
+      <div className="ml-3">{channelState?.name}</div>
     </div>
   );
 };
