@@ -8,7 +8,7 @@ import React from "react";
 import {
   GetRoomResponse,
   GetChannelResponse,
-} from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
+} from "../../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
 const Channel = ({
   channelState,
@@ -23,8 +23,8 @@ const Channel = ({
   channelState.channel;
   return (
     <div className="shadow-inner">
-      <div className="border-b">
-        <div className="ml-2 mt-6 mb-4 text-l ">{channelState.name}</div>
+      <div className="border-b mx-4 border-spotify5">
+        <div className="mx-auto mb-4 text-l ">{channelState.name}</div>
       </div>
 
       <div className="flex flex-row mt-8">
@@ -36,7 +36,7 @@ const Channel = ({
           <PlusIcon className="text-white w-5 h-5" />
         </div>
       </div>
-      <div>
+      <div className="">
         {channelState &&
           channelState.channel.map((c) => (
             <MapChannel

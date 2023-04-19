@@ -6,7 +6,7 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { Searchbar } from "./Searchbar";
+import { Searchbar } from "./footerComponents/Searchbar";
 
 import {
   GetUserResponse,
@@ -160,7 +160,7 @@ const Chat = ({
               <h2 className="mx-14 text-lg my-0.5"> {msg.author}</h2>
             </div>
 
-            <div className="block grow-0 pl-8 mx-6 p-4 break-words overflow-x-hidden w-[40vw]  bg-test   border border-customgray  rounded-2xl shadow-2xl">
+            <div className="block grow-0 pl-8 mx-6 p-4 break-words overflow-x-hidden w-[40vw]  bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
               {msg.content}
 
               <div className="absolute border border-customOrange bg-blacky top-2 left-0 z-10 rounded-2xl">

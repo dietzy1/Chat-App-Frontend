@@ -19,7 +19,7 @@ const Navbar = ({
 }) => {
   return (
     <div>
-      <nav className="text-white flex flex-row h-20 w-full bg-blacky fixed top-0 justify-items-stretch z-30  shadow-lg">
+      <nav className="text-white flex flex-row h-20 w-full bg-spotify8 fixed top-0 justify-items-stretch z-20  shadow-lg">
         {/*  <div className="flex flex-row justify-center "> */}
         <div className="sm:w-[30rem] w-0 flex flex-row">
           <div className="w-28"></div>

@@ -5,23 +5,18 @@ import React from "react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 
-import { Marshal } from "../websocket/Serialize";
+import { Marshal } from "../../websocket/Serialize";
 
-import { MessageType, UserType } from "../types/interfaces";
-import { GetUserResponse } from "../api/protos/user/v1/usergateway_service_pb";
+import { MessageType, UserType } from "../../types/interfaces";
+import { GetUserResponse } from "../../api/protos/user/v1/usergateway_service_pb";
 import { ReadyStateState } from "react-use-websocket/dist/lib/types";
 
 export const Searchbar = ({
-  /* input,
-  setInput, */
-
   handleClickSendMessage,
   user,
   chatroomuuid,
   channeluuid,
 }: {
-  /*  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>; */
   handleClickSendMessage: (msg: Uint8Array) => void;
   user: GetUserResponse;
   chatroomuuid: string;
@@ -51,9 +46,9 @@ export const Searchbar = ({
 
   return (
     <div>
-      <footer className="fixed bottom-0 left-10 right-10  z-10 text-darky flex flex-row justify-center mx-auto w-full">
+      <footer className="text-darky flex flex-row justify-center mx-auto w-full">
         <form
-          className="bg-customgray w-[50vw] h-14 m-2 border rounded-xl flex items-center border-gray-500"
+          className="bg-spotify2 w-[50vw] h-14 m-2 border rounded-xl flex items-center border-spotify7"
           onSubmit={sendInput}
         >
           <input

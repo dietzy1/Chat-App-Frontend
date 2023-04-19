@@ -1,5 +1,7 @@
 /** @format */
 
+import logo from "../assets/logo.svg";
+
 import React, { useMemo } from "react";
 import "../App.css";
 import { defaultGlobalStateType, useGlobalState } from "../context/context";
@@ -26,13 +28,14 @@ import {
 import { GetRoomResponse } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
 //COMPONENTS
-import Online, { Offline } from "../components/Online";
+import Activitybar from "../components/Activitybar";
 import Navbar from "../components/Navbar";
-import User from "../components/User";
-import Channel from "../components/Channel";
-import Chatroom, { CreateChatroom } from "../components/Chatroom";
+
+import Chatroombar from "../components/Chatroombar";
+import Channel from "../components/chatroomComponents/Channel";
+import Footer from "../components/Footer";
 import Chat from "../components/Chat";
-import Searchbar from "../components/Searchbar";
+
 import { useNavigate } from "react-router-dom";
 
 //PORTALS
@@ -420,7 +423,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
   );
 
   return (
-    <div className="h-screen w-screen wtf flex flex-row justify-between max-h-screen">
+    <div className="h-screen w-screen bg-spotify3 flex flex-row justify-between max-h-screen">
       {chatroomState && (
         <Navbar
           key={
@@ -439,46 +442,21 @@ export function Home({ userState }: { userState: GetUserResponse }) {
           onClose={setOpen}
         />
       )}
+      <Footer
+        handleClickSendMessage={handleClickSendMessage}
+        user={userState!}
+        channeluuid={channel}
+        chatroomuuid={chatroom}
+      />
 
-      <div className="w-[30rem] flex flex-row">
-        <div className=" flex flex-col">
-          <div className="sm:w-28 h-[93vh] hidden sm:flex flex-col w-full overflow-y-scroll scrollbar-hide pt-24  justify-start  bg-blacky border-r border-gray-900">
-            {chatroomState &&
-              chatroomState.rooms.map((chatroom) => (
-                <Chatroom
-                  chatroomState={chatroom}
-                  setChatroom={setChatroom}
-                  key={chatroom.chatroomUuid}
-                />
-              ))}
-          </div>
-
-          <div className="h-[7vh] flex border-gray-900 drop-shadow-2xl mx-auto z-20">
-            {/* <ArrowLeftOnRectangleIcon className="text-white w-10 h-10 my-auto mx-auto" /> */}
-
-            <CreateChatroom />
-          </div>
-        </div>
-
-        <div className="sm:w-full hidden sm:flex flex-col shrink bg-test  pt-28 drop-shadow-2xl border-gray-900 border-r">
-          <div className="h-[92vh] flex flex-col overflow-y-scroll scrollbar-hide">
-            <div>
-              {chatroomState &&
-                chatroomState.rooms.map((chatroom, i) => (
-                  <Channel
-                    channelState={chatroom}
-                    setChannel={setChannel}
-                    key={chatroom.channel[i].channelUuid}
-                  />
-                ))}
-
-              {/*  <Channel channelState={chatroomState} setChannel={setChannel} /> */}
-            </div>
-          </div>
-          <div className="h-[8vh] border-t bg-test mt-4">
-            {userState && <User user={userState!} />}
-          </div>
-        </div>
+      <div className="w-[20rem] z-20">
+        {chatroomState && (
+          <Chatroombar
+            chatroomsState={chatroomState}
+            setChatroom={setChatroom}
+            setChannel={setChannel}
+          />
+        )}
       </div>
 
       {/*I might want to wrap this in a div with collum to fix the ref dummy issue*/}
@@ -502,76 +480,16 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       </div>
       {/*I might want to wrap this in a div with collum to fix the ref dummy issue*/}
 
-      <div className="sm:w-96 h-screen hidden sm:flex flex-col overflow-y-scroll  scrollbar-hide pt-28 bg-test border-l border-gray-900">
+      <div className="sm:w-[16rem] h-screen hidden sm:flex flex-col overflow-y-scroll  scrollbar-hide pt-28 bg-spotify3 shadow-inner">
         {/*  <div className=" flex flex-row sm:visible invisible pb-1 mb-4"></div> */}
-        <div className="h-[92rem]">
-          <span className="text-2xl font-semibold text-white flex flex-col w-full">
-            <span className=" max-w-xs ml-auto w-64">
-              {"Online - " + activityState?.onlineUsers.length!}
-            </span>
-          </span>
 
-          <div className="w-[100%] ">
-            {activityState?.onlineUsers &&
-              usersState?.users &&
-              activityState.onlineUsers.map((ac, i) => (
-                <Online activity={ac} users={usersState!} key={i} />
-              ))}
-
-            <span className="text-2xl font-semibold text-white flex flex-col w-full">
-              <span className="max-w-xs ml-auto w-64">
-                {" "}
-                {"Offline - " +
-                  (usersState?.users.length! -
-                    activityState?.onlineUsers.length!)}
-              </span>
-            </span>
-            {activityState?.onlineUsers &&
-              usersState?.users &&
-              usersState.users
-                .filter(
-                  (user) => !activityState.onlineUsers.includes(user.uuid)
-                )
-                .map((user, i) => (
-                  <Offline /* activity={activityState} */ user={user} key={i} />
-                ))}
-          </div>
-        </div>
-        <div className="h-[8vh]">
-          <div className=" px-8 py-4 border-t flex flex-row justify-around">
-            <UserCircleIcon
-              className="w-10 h-10 opacity-80 z-[11]"
-              onClick={() => openAccountFunc(setOpenAccount, setOpenSettings)}
-            />
-            <Cog8ToothIcon
-              onClick={() => openSettingsFunc(setOpenAccount, setOpenSettings)}
-              className="w-10 h-10 opacity-80 z-[11]"
-            />
-            <ArrowLeftOnRectangleIcon
-              className="w-10 h-10 opacity-80 z-[11]"
-              /*  TODO:I need to implement the logout function here */
-              onClick={() =>
-                //Create anominous async function that logs out the user
-                (async () => {
-                  const req = new LogoutRequest();
-                  const response = (await authClient.fetch(
-                    req
-                  )) as LogoutResponse;
-                  navigate("/login");
-                  dispatch({ user: false });
-                })()
-              }
-            />
-          </div>
-        </div>
+        {activityState && usersState && (
+          <Activitybar
+            activityState={activityState!}
+            usersState={usersState!}
+          />
+        )}
       </div>
-
-      <Searchbar
-        handleClickSendMessage={handleClickSendMessage}
-        user={userState!}
-        channeluuid={channel}
-        chatroomuuid={chatroom}
-      />
 
       {/*REACT PORTALS */}
       <Account open={openAccount} onClose={() => setOpen(false)} />
