@@ -19,6 +19,10 @@ const Channel = ({
 }) => {
   //Onclick function for creating new channel
 
+  const handleModal = () => {
+    console.log("clicked");
+  };
+
   //Based on which ever server is clicked I need to send the index of the array to the server
   channelState.channel;
   return (
@@ -32,8 +36,15 @@ const Channel = ({
           <ChevronDownIcon className="h-5 w-5 text-white mr-2 " />
           <div className="text-gray-500">CHANNEL</div>
         </div>
-        <div className="flex flex-row w-full justify-end mr-2">
-          <PlusIcon className="text-white w-5 h-5" />
+
+        {/*FIXME:*/}
+        <div className="flex flex-row justify-end w-full mr-2 relative group ">
+          <div onClick={handleModal} className="">
+            <PlusIcon className="text-white w-5 h-5" />
+          </div>
+          <div className="fixed left-[14.5rem] top-[7.5rem] my-2 w-auto p-3 m-4 min-w-max rounded-md shadow-md text-white bg-gradient-to-l from-red-400 to-orange-400 text-xs font-bold z-10 group-hover:scale-100 transition-all duration-100 scale-0 origin-left">
+            {"Create channel!"}
+          </div>
         </div>
       </div>
       <div className="">

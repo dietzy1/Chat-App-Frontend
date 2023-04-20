@@ -1,5 +1,5 @@
 /** @format */
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import Hover from "./Hover";
 function CreateChatroom() {
   //I need to add some onclick function here
@@ -17,9 +17,9 @@ function CreateChatroom() {
 
   return (
     <div className="my-2 flex justify-center relative group shadow-inner">
-      <div className="m-2 flex justify-center shadow-inner">
+      <div className="m-2 flex justify-center shadow-inner border-t mx-3 border-spotify7 pt-2">
         <PlusIcon
-          className="w-12 h-12 rounded-full bg-spotify2 text-customOrange"
+          className="rounded-full  border-t-[4px] border-l-[1.7px] border-r-[1.7px] p-1.5 border-spotify7 w-12 h-12 "
           onClick={handleOnClick}
         />
       </div>
@@ -30,14 +30,4 @@ function CreateChatroom() {
     </div>
   );
 }
-
 export default CreateChatroom;
-
-{
-  /* <div className="m-2 flex justify-center shadow-inner">
-        <PlusIcon
-          className="w-10 h-10 rounded-full bg-spotify2 text-customOrange"
-          onClick={handleOnClick}
-        />
-      </div> */
-}

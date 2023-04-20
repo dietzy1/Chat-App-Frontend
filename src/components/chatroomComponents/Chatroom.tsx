@@ -20,7 +20,7 @@ const Chatroom = ({
 }) => {
   return (
     <div
-      className="flex justify-center relative group shadow-inner"
+      className="flex justify-center relative group shadow-inner mt-4"
       onClick={() => {
         setChatroom(chatroomState?.chatroomUuid!);
         console.log("Swapped to chatroom: " + chatroomState?.chatroomUuid!);
@@ -28,7 +28,7 @@ const Chatroom = ({
     >
       <div className="w-[60%] h-[60%]">
         <img
-          className="rounded-full  border-b-[4px] border-l-[1.7px] border-r-[1.7px] p-1.5 border-customOrange"
+          className="rounded-full  border-t-[4px] border-l-[1.7px] border-r-[1.7px] p-1.5 border-customOrange"
           src={chatroomState?.icon}
         />
       </div>

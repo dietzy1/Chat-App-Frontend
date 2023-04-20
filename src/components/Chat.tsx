@@ -123,12 +123,12 @@ const Chat = ({
                   contentEditable="true"
                   suppressContentEditableWarning={true}
                   onKeyDown={editMessage}
-                  className="block grow-0 mx-6 p-4  overflow-x-hidden break-words w-[40vw] text-react bg-gradient-to-l from-red-400 to-orange-400 bg-opacity-50 border border-customgray  rounded-2xl shadow-2xl"
+                  className="block grow-0 mx-6 p-3  overflow-x-hidden break-words w-[40vw] text-react bg-gradient-to-l from-red-400 to-orange-400 bg-opacity-50 border border-customgray  rounded-2xl shadow-2xl"
                 >
                   {msg.content}
                 </div>
               ) : (
-                <div className="block grow-0 mx-6 p-4  overflow-x-hidden break-words w-[40vw] text-react bg-gradient-to-l from-red-400 to-orange-400 bg-opacity-50 border border-customgray  rounded-2xl shadow-2xl">
+                <div className="block grow-0 mx-6 p-3  overflow-x-hidden break-words w-[40vw] text-react bg-gradient-to-l from-red-400 to-orange-400 bg-opacity-50 border border-customgray  rounded-2xl shadow-2xl">
                   {msg.content}
                 </div>
               )}
@@ -160,7 +160,7 @@ const Chat = ({
               <h2 className="mx-14 text-lg my-0.5"> {msg.author}</h2>
             </div>
 
-            <div className="block grow-0 pl-8 mx-6 p-4 break-words overflow-x-hidden w-[40vw]  bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
+            <div className="block grow-0 pl-8 mx-6 p-3 break-words overflow-x-hidden w-[40vw]  bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
               {msg.content}
 
               <div className="absolute border border-customOrange bg-blacky top-2 left-0 z-10 rounded-2xl">

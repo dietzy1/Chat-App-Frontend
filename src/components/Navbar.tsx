@@ -8,6 +8,8 @@ import { ChatroomType } from "../types/interfaces";
 import { useGlobalState } from "../context/context";
 import { GetRoomResponse } from "../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
+import { HashtagIcon } from "@heroicons/react/24/outline";
+
 const Navbar = ({
   chatroomState,
   open,
@@ -19,14 +21,11 @@ const Navbar = ({
 }) => {
   return (
     <div>
-      <nav className="text-white flex flex-row h-20 w-full bg-spotify8 fixed top-0 justify-items-stretch z-20  shadow-lg">
+      <nav className="text-white flex flex-row h-20 w-full bg-spotify8 fixed top-0 justify-center z-20  shadow-lg">
         {/*  <div className="flex flex-row justify-center "> */}
         <div className="sm:w-[30rem] w-0 flex flex-row">
           <div className="w-28"></div>
-          {/*  <div className="flex flex-row">
-            <img src="src/assets/fire.png" className="" />
-            <div className="whitespace-nowrap my-auto text-xl">Dev Chat</div>
-          </div> */}
+
           <div className="sm:hidden flex">
             {/* <Hamburger
         direction="left"
@@ -41,8 +40,11 @@ const Navbar = ({
         </div>
 
         <div className="w-full flex flex-row justify-center">
-          <div className="my-auto text-3xl mx-auto  bold">
-            {chatroomState.name}
+          <div className="flex flex-row">
+            <HashtagIcon className="w-4 h-4 my-auto text-customOrange" />
+            <div className="my-auto text-1xl mx-auto  bold">
+              {chatroomState.name}
+            </div>
           </div>
 
           {/*  <div className="sm:hidden flex"> */}

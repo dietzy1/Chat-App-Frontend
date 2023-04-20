@@ -8,6 +8,8 @@ import Channel from "./chatroomComponents/Channel";
 import Chatroom from "./chatroomComponents/Chatroom";
 import CreateChatroom from "./chatroomComponents/CreateChatroom";
 
+import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
+
 function Chatroombar({
   chatroomsState,
 
@@ -60,7 +62,12 @@ function Chatroombar({
       </svg>
 
       <div className="flex flex-row mt-5">
-        <div className="sm:w-28 h-[97vh] hidden sm:flex flex-col w-full overflow-y-scroll scrollbar-hide mt-16  justify-start  bg-spotify8">
+        <div className="sm:w-28 h-[97vh] hidden sm:flex flex-col w-full overflow-y-scroll scrollbar-hide mt-0.5 pt-8  justify-start  bg-spotify6">
+          <div className="border-b mx-3 border-spotify7 flex justify-center pb-2">
+            <ChatBubbleBottomCenterIcon className="rounded-full  border-t-[4px] border-l-[1.7px] border-r-[1.7px] p-1.5 border-spotify7" />
+            {/* <ChatBubbleBottomCenterIcon className="h-12 w-12 text-spotify7 border p-1 rounded-2xl border-spotify7" /> */}
+          </div>
+
           {chatroomsState.rooms.map((chatroom) => (
             <Chatroom
               chatroomState={chatroom}
@@ -72,7 +79,7 @@ function Chatroombar({
           <CreateChatroom />
         </div>
 
-        <div className="sm:w-full hidden sm:flex flex-col shrink bg-spotify3  pt-16 drop-shadow-2xl shadow-inner opacity-95 border-gray-900">
+        <div className="sm:w-full hidden sm:flex flex-col shrink bg-spotify3  pt-[3rem] mt-0.5 drop-shadow-2xl shadow-inner opacity-95 border-gray-900">
           <div className="h-[92vh] flex flex-col overflow-y-scroll scrollbar-hide">
             <Channel
               channelState={chatroomsState.rooms[0]}
