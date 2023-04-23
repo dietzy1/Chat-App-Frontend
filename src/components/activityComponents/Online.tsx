@@ -19,7 +19,7 @@ function Online({
   return (
     <div>
       {onlineUser?.name ? (
-        <div className="max-w-xs ml-auto break-all w-48 shadow-inner">
+        <div className="max-w-xs ml-auto break-all w-40 shadow-inner">
           <div className="flex flex-row items-center hover:bg-gray-100  rounded-3xl mb-2">
             <div className="m-2 relative">
               <img

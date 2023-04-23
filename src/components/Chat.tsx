@@ -76,6 +76,101 @@ const Chat = ({
   }, []);
 
   return (
+    <div>
+      <div className="flex flex-row m-2 justify-start w-full relative mb-10">
+        <div className="flex flex-col">
+          <div className="flex flex-row heading">
+            <h2 className="ml-14 mr-8 text-lg my-0.5 font-sans font-semibold-">
+              {" "}
+              {msg.author}
+            </h2>
+            <div className=" my-2  text-xs font-mono font-light opacity-50 text-[#A3A6AA]">
+              {msg.timestamp}
+            </div>
+          </div>
+
+          <div className="block grow-0 pl-8 mx-6 p-3 break-words overflow-x-hidden  bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
+            {msg.content}
+
+            <div className="absolute border border-customOrange bg-blacky top-2 left-0 z-10 rounded-2xl">
+              <img
+                className="w-12 h-12  flex-shrink-0 rounded-full border-4 border-blacky z-10"
+                alt=""
+                src={icon!}
+              ></img>
+            </div>
+          </div>
+          {/*  <div className="ml-[14rem] sm:ml-[35rem] font-medium text-xs text-[#A3A6AA] bg-green-500">
+              {msg.timestamp}
+            </div> */}
+          {/* <div className="absolute -bottom-4 left-10 text-xs font-mono font-light opacity-50 text-[#A3A6AA]">
+            {msg.timestamp}
+          </div> */}
+        </div>
+
+        {/*  <div className=" font-medium text-xs my-2 text-[#A3A6AA]">
+            {msg.timestamp}
+          </div> */}
+      </div>
+    </div>
+  );
+};
+
+export default Chat;
+
+const Chat1 = ({
+  msg,
+  user,
+  users,
+}: {
+  msg: Msg;
+  user: GetUserResponse;
+  users: GetUsersResponse;
+}) => {
+  const [text, setText] = useState(msg.content);
+  const [editing, setEditing] = useState(false);
+
+  const editMessage = (e: any) => {
+    if (e.key === "Enter" || e.keyCode === 13) {
+      console.log("editing message");
+      e.preventDefault();
+      editingToggle();
+    }
+  };
+  const confirmEditing = () => {
+    console.log("editing message");
+    editingToggle();
+  };
+
+  const revertEditing = () => {
+    setText(msg.content);
+    editingToggle();
+  };
+
+  const editingToggle = () => {
+    setEditing(!editing);
+    console.log("editing: " + editing);
+  };
+
+  //I need to find a way to map between the message and the user
+  //Combine the two and then display the icon
+  //const idk = msg.authorUuid;
+  //const idkk = user.uuid;
+
+  const [icon, setIcon] = useState("");
+  useEffect(() => {
+    //Find a match uuid between the message and the user
+    //Then set the icon to the icon of the user
+    for (let i = 0; i < users.users.length; i++) {
+      //console.log(user);
+      if (msg.authorUuid === users.users[i].uuid) {
+        setIcon(users.users[i].icon?.link!);
+        //console.log(user.users[i].icon?.link!);
+      }
+    }
+  }, []);
+
+  return (
     <div className="mb-10 text-lg">
       {msg.authorUuid === user.uuid && (
         <div className="flex flex-row m-2  justify-end w-full relative ">
@@ -187,5 +282,3 @@ const Chat = ({
     </div>
   );
 };
-
-export default Chat;

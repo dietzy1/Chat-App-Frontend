@@ -449,7 +449,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
         chatroomuuid={chatroom}
       />
 
-      <div className="w-[20rem] z-20">
+      <div className="w-[32rem] z-20">
         {chatroomState && (
           <Chatroombar
             chatroomsState={chatroomState}
@@ -461,10 +461,10 @@ export function Home({ userState }: { userState: GetUserResponse }) {
 
       {/*I might want to wrap this in a div with collum to fix the ref dummy issue*/}
       <div
-        className={` sm:w-full w-full flex justify-center overflow-x-hidden border-gray-500 h-[96vh] overflow-y-scroll scrollbar-hide `}
+        className={` sm:w-full w-full flex justify-center overflow-x-hidden  h-[96vh] overflow-y-scroll scrollbar-hide `}
       >
         {/*TODO: the magic number was mb-10 before */}
-        <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-20 scrollbar-hide overflow-x-hidden max-w-[100%] pb-28">
+        <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-4 scrollbar-hide overflow-x-hidden w-full pb-28">
           {messageState &&
             usersState &&
             messageState.messages.map((msg) => (
@@ -480,7 +480,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       </div>
       {/*I might want to wrap this in a div with collum to fix the ref dummy issue*/}
 
-      <div className="sm:w-[16rem] h-screen hidden sm:flex flex-col overflow-y-scroll  scrollbar-hide pt-28 bg-spotify3 shadow-inner">
+      <div className="sm:w-[14rem] h-screen hidden sm:flex flex-col overflow-y-scroll  scrollbar-hide pt-28 bg-spotify3 shadow-inner">
         {/*  <div className=" flex flex-row sm:visible invisible pb-1 mb-4"></div> */}
 
         {activityState && usersState && (

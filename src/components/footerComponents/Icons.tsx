@@ -16,28 +16,6 @@ function Icons() {
   const [state, dispatch] = useGlobalState();
   const authClient = new Client(AuthGatewayService);
 
-  return (
-    <div className=" px-8 py-4 flex flex-row justify-around">
-      <UserCircleIcon
-        className="w-10 h-10 opacity-80"
-        /* onClick={() => openAccountFunc(setOpenAccount, setOpenSettings)} */
-      />
-      <Cog8ToothIcon
-        /* onClick={() => openSettingsFunc(setOpenAccount, setOpenSettings)} */
-        className="w-10 h-10 opacity-80"
-      />
-      <ArrowLeftOnRectangleIcon
-        className="w-10 h-10 opacity-80"
-        onClick={() =>
-          (async () => {
-            const req = new LogoutRequest();
-            const response = (await authClient.fetch(req)) as LogoutResponse;
-            navigate("/login");
-            dispatch({ user: false });
-          })()
-        }
-      />
-    </div>
-  );
+  return <div className=" px-8 py-4 flex flex-row justify-around"></div>;
 }
 export default Icons;

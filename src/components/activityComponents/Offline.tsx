@@ -18,7 +18,7 @@ function Offline({
   return (
     <div>
       {user?.name ? (
-        <div className="max-w-xs break-all ml-auto w-48 shadow-inner">
+        <div className="max-w-xs break-all ml-auto w-40 shadow-inner">
           <div className="flex flex-row items-center hover:bg-gray-100 rounded-3xl mb-2">
             <div className="m-2 relative">
               <img
