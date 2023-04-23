@@ -16,6 +16,10 @@ function Activitybar({
 
   //Calculate offline users
 
+  usersState.users
+    .filter((user) => !activityState.onlineUsers.includes(user.uuid))
+    .map((user, i) => console.log(user.name));
+
   return (
     <div className="">
       <span className="text-base font-semibold text-white flex flex-col w-full ">
@@ -25,7 +29,7 @@ function Activitybar({
       </span>
 
       <div className=" flex justify-start flex-col">
-        <div className="flex justify-start">
+        <div className="flex justify-start flex-col mr-auto">
           {activityState.onlineUsers &&
             usersState.users &&
             activityState.onlineUsers.map((ac, i) => (
@@ -40,7 +44,7 @@ function Activitybar({
               (usersState?.users.length! - activityState?.onlineUsers.length!)}
           </span>
         </span>
-        <div className="flex justify-start">
+        <div className="flex flex-col justify-start mr-auto">
           {activityState?.onlineUsers &&
             usersState?.users &&
             usersState.users

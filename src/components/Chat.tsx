@@ -80,7 +80,7 @@ const Chat = ({
       <div className="flex flex-row m-2 justify-start w-full relative mb-10">
         <div className="flex flex-col">
           <div className="flex flex-row heading">
-            <h2 className="ml-14 mr-8 text-lg my-0.5 font-sans font-semibold-">
+            <h2 className="ml-14 mr-8 text-lg my-0.5 font-sans font-semibold">
               {" "}
               {msg.author}
             </h2>

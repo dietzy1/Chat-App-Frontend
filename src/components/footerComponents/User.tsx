@@ -10,34 +10,43 @@ import {
 import React from "react";
 
 import { GetUserResponse } from "../../api/protos/user/v1/usergateway_service_pb";
+import { LogoutRequest } from "../../api/protos/auth/v1/authgateway_service_pb";
+import { Client } from "../../api/Client";
+import { AuthGatewayService } from "../../api/protos/auth/v1/authgateway_service_connect";
+import { useNavigate } from "react-router-dom";
+import { useGlobalState } from "../../context/context";
 
 const User = ({ user }: { user: GetUserResponse }) => {
   const [toggle, setToggle] = React.useState(false);
-  const [isClicked, setIsClicked] = React.useState(false);
+  const [state, dispatch] = useGlobalState();
 
-  const openUserInformation = () => {
+  const navigate = useNavigate();
+
+  const toggleUserInformation = () => {
     console.log("opening user information");
-    setIsClicked(!isClicked);
     setToggle(!toggle);
   };
 
-  const handleMouseEnter = () => {
-    setToggle(true);
-  };
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault;
 
-  const handleMouseLeave = () => {
-    if (isClicked) {
-      console.log("clicked");
-      return;
+    const authClient = new Client(AuthGatewayService);
+
+    const request = new LogoutRequest();
+    const res = await authClient.fetch(request);
+
+    if (res !== undefined) {
+      console.log("Logged out");
+
+      navigate("/login");
+    } else {
+      console.log("Something went wrong");
     }
-    setToggle(!toggle);
   };
 
   return (
     <div
-      onClick={openUserInformation}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={toggleUserInformation}
       className="flex flex-row m-1 my-auto rounded-xl py-1  p-3 hover:bg-spotify7"
     >
       {toggle && (
@@ -47,7 +56,7 @@ const User = ({ user }: { user: GetUserResponse }) => {
               className="h-20 w-20 rounded-full border border-customOrange p-2"
               src={user.icon?.link}
             />
-            <div>{user.name}</div>
+            <h2 className="heading">{user.name}</h2>
             <div>#3321</div>
           </div>
 
@@ -61,9 +70,12 @@ const User = ({ user }: { user: GetUserResponse }) => {
             <div className="bg-spotify6 w-40 border border-spotify4 rounded-lg text-center p-1 m-1">
               Manage account
             </div>
-            <div className="bg-spotify6 w-40 border border-spotify4 rounded-lg text-center p-1 m-1">
+            <h2
+              onClick={handleLogout}
+              className="bg-spotify6 w-40 border border-spotify4 rounded-lg text-center p-1 m-1 heading"
+            >
               Logout
-            </div>
+            </h2>
           </div>
         </div>
       )}

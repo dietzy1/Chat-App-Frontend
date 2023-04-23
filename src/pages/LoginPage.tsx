@@ -131,7 +131,7 @@ const LoginPage = () => {
             </div>
 
             <button
-              className="w-full my-5 py-2 bg-greeny border border-customOrange shadow-lg shadow-blacky/50 hover:shadow-blacky/30 text-white font-semibold rounded-lg heading"
+              className="w-full my-5 py-2 border border-customOrange shadow-lg shadow-blacky/50 hover:shadow-blacky/30 text-white font-semibold rounded-lg heading"
               type="submit"
               onClick={onsubmitfunc}
             >

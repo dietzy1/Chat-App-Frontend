@@ -111,7 +111,7 @@ const RegisterPage = () => {
               <input
                 className="rounded-lg bg-spotify6  mt-2 p-2 focus:border-greeny focus:bg-spotify7 focus:outline-none border border-spotify2"
                 type="password"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setRepeatedPassword(e.target.value)}
               />
 
               <div className=" text-gray-400 py-2">
