@@ -21,17 +21,18 @@ body {
 .login {
   padding: 0;
   margin: 0;
-  background-image: url("./assets/stacked.svg");
+  background-image: url("./assets/oooscillate.svg");
   background-size: cover;
 
-  background-color: #17141d;
+  background-color: #282828;
   color: white;
   font-family: 'DM Mono', monospace;
 }
 
 .login2 {
-  background-image: url("./assets/blob.svg");
+  background-image: url("./assets/ccchaos.svg");
   background-size: cover;
+  
 }
 
 .account {
