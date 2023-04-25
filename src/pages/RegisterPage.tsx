@@ -35,6 +35,14 @@ const RegisterPage = () => {
       setError({ bool: true, error: "Passwords do not match" });
       return;
     }
+    //Check if password is atleast of 8 length
+    if (password.length < 8) {
+      setError({
+        bool: true,
+        error: "Password should atleast be 8 characters long",
+      });
+      return;
+    }
 
     const request = new RegisterRequest();
     request.username = username;
@@ -83,7 +91,7 @@ const RegisterPage = () => {
             <h2 className="text-4xl font-bold text-white text-center">
               Create account
             </h2>
-            <h2 className="text-sm mb-6 font-extralight text-center">
+            <h2 className="text-sm mb-4 font-extralight text-center">
               Sign up
             </h2>
             <div className="flex flex-col text-gray-400 py-2">
@@ -91,7 +99,7 @@ const RegisterPage = () => {
                 Username
               </label>
               <input
-                className="rounded-lg bg-spotify6 mt-2 p-2 focus:border-greeny focus:bg-spotify7 focus:outline-none border border-spotify2"
+                className="rounded-lg bg-spotify6 mt-2 p-2 focus:border-spotify3 focus:bg-spotify7 focus:outline-none border border-spotify2"
                 type="text"
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -101,7 +109,7 @@ const RegisterPage = () => {
                 Password
               </label>
               <input
-                className="rounded-lg bg-spotify6  mt-2 p-2 focus:border-greeny focus:bg-spotify7 focus:outline-none border border-spotify2"
+                className="rounded-lg bg-spotify6  mt-2 p-2 focus:border-spotify3 focus:bg-spotify7 focus:outline-none border border-spotify2"
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -109,7 +117,7 @@ const RegisterPage = () => {
                 Repeat password
               </label>
               <input
-                className="rounded-lg bg-spotify6  mt-2 p-2 focus:border-greeny focus:bg-spotify7 focus:outline-none border border-spotify2"
+                className="rounded-lg bg-spotify6  mt-2 p-2 focus:border-spotify3 focus:bg-spotify7 focus:outline-none border border-spotify2"
                 type="password"
                 onChange={(e) => setRepeatedPassword(e.target.value)}
               />
@@ -121,26 +129,24 @@ const RegisterPage = () => {
               </div>
 
               {!error.bool && (
-                <div className="invisible mx-auto p-1 text-lg text-green-500">
-                  t
-                </div>
+                <div className="invisible mx-auto p-1 text-sm">Static text</div>
               )}
 
               {error.bool && (
-                <div className=" rounded-xl mx-auto p-1 text-lg text-red-500">
+                <div className=" rounded-xl mx-auto p-1 text-sm text-red-500">
                   {error.error}
                 </div>
               )}
             </div>
 
             <button
-              className="w-full my-5 py-2 bg-greeny border border-customOrange shadow-lg shadow-blacky/50 hover:shadow-blacky/30 text-white font-semibold rounded-lg heading"
+              className="w-full mb-1 py-2 bg-greeny border border-customOrange shadow-lg shadow-blacky/50 hover:shadow-blacky/30 text-white font-semibold rounded-lg heading"
               type="submit"
               onClick={onsubmitfunc}
             >
               <h2>Sign up</h2>
             </button>
-            <div className="flex flex-row text-gray-400 mb-4 justify-center border-b pb-10 border-spotify2">
+            <div className="flex flex-row text-gray-400 mb-4 justify-center border-b pb-4 border-spotify2">
               <p className="mr-1 text-sm">Already registered?</p>
               <Link to="/login" className="underline text-customOrange text-sm">
                 Sign in

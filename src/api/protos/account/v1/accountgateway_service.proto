@@ -5,8 +5,16 @@ package accountgateway.v1;
 service AccountGatewayService {
   //External RPC
   rpc ChangeUsername(ChangeUsernameRequest) returns (ChangeUsernameResponse) {}
+
   rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {}
+
   rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse) {}
+
+  rpc RegisterAccount(RegisterAccountRequest) returns (RegisterAccountResponse) {}
+
+  rpc DemoUserRegister(DemoUserRegisterRequest) returns (DemoUserRegisterResponse) {}
+
+  rpc UpgradeDemoUser(UpgradeDemoUserRequest) returns (UpgradeDemoUserResponse) {}
 }
 
 message ChangeUsernameRequest {
@@ -30,3 +38,28 @@ message DeleteAccountRequest {
 }
 
 message DeleteAccountResponse {}
+
+message RegisterAccountRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message RegisterAccountResponse {
+  string session = 1;
+  string user_uuid = 2;
+}
+
+message DemoUserRegisterRequest {}
+
+message DemoUserRegisterResponse {
+  string session = 1;
+  string user_uuid = 2;
+}
+
+message UpgradeDemoUserRequest {
+  string user_uuid = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message UpgradeDemoUserResponse {}

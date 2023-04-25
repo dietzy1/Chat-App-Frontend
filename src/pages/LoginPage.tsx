@@ -46,6 +46,16 @@ const LoginPage = () => {
 
   const onsubmitfunc = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    //Check if password is atleast of len 8
+    if (password.length < 8) {
+      setError({
+        bool: true,
+        error: "Incorrect password",
+      });
+      return;
+    }
+
     const request = new LoginRequest();
     request.username = username;
     request.password = password;
@@ -56,8 +66,12 @@ const LoginPage = () => {
       navigate("/");
     } else {
       setError({ bool: true, error: "Wrong username or password" });
-      navigate("/login");
+      //navigate("/login");
     }
+  };
+
+  const demoOnsubmitfunc = async (e: React.FormEvent) => {
+    e.preventDefault();
   };
 
   return (
@@ -89,7 +103,7 @@ const LoginPage = () => {
             <h2 className="text-4xl font-bold text-white text-center">
               Welcome back
             </h2>
-            <h2 className="text-sm mb-6 font-extralight text-center">
+            <h2 className="text-sm mb-4 font-extralight text-center">
               Sign in to continue
             </h2>
             <div className="flex flex-col text-gray-400 py-2">
@@ -118,13 +132,13 @@ const LoginPage = () => {
               </div>
 
               {!error.bool && (
-                <div className="invisible mx-auto p-1 text-lg text-green-500">
+                <div className="invisible mx-auto p-1 text-sm text-green-500">
                   t
                 </div>
               )}
 
               {error.bool && (
-                <div className=" rounded-xl mx-auto p-1 text-lg text-red-500">
+                <div className=" rounded-xl mx-auto p-1 text-sm text-red-500">
                   {error.error}
                 </div>
               )}
@@ -137,7 +151,7 @@ const LoginPage = () => {
             >
               <h2>Login</h2>
             </button>
-            <div className="flex flex-row text-gray-400 mb-4 justify-center border-b pb-10 border-spotify2">
+            <div className="flex flex-row text-gray-400 mb-4 justify-center border-b pb-4 border-spotify2">
               <p className="mr-1 text-sm">Not registered yet? </p>
               <Link
                 to="/register"
@@ -145,6 +159,12 @@ const LoginPage = () => {
               >
                 Create an Account
               </Link>
+            </div>
+            <div
+              onClick={demoOnsubmitfunc}
+              className="flex justify-center font-extralight border-b border-customOrange mx-20 pb-2"
+            >
+              Click here for a demo
             </div>
           </form>
         </div>

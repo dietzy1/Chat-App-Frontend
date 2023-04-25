@@ -4,7 +4,6 @@ package messagegateway.v1;
 
 //this is a complete fcking shitshow someone needs to clean this up
 service MessageGatewayService {
-
   rpc CreateMessage(CreateMessageRequest) returns (CreateMessageResponse) {}
 
   rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse) {}

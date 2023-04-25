@@ -38,7 +38,6 @@ message DeleteRoomRequest {
 
 message DeleteRoomResponse {}
 
-
 message GetRoomRequest {
   string chatroom_uuid = 1;
 }
@@ -52,7 +51,7 @@ message GetRoomResponse {
   repeated Channel channel = 6;
 }
 
-message Channel  {
+message Channel {
   string channel_uuid = 1;
   string name = 2;
   string chatroom_uuid = 3;
@@ -66,7 +65,6 @@ message GetRoomsRequest {
 message GetRoomsResponse {
   repeated GetRoomResponse rooms = 1;
 }
-
 
 // -- ------------------------------------------------------------------------------
 
