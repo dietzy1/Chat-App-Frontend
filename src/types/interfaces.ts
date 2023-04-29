@@ -37,14 +37,3 @@ export interface LoginError {
   error: string;
   bool: boolean;
 }
-
-interface User {
-  icon: string;
-  name: string;
-  uuid: string;
-  Discription: string;
-  Joindate: string;
-  Roles: string[];
-  ChatServers: string[];
-  Reports: number;
-}

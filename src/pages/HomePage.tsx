@@ -465,16 +465,13 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       >
         {/*TODO: the magic number was mb-10 before */}
         <div className="sm:mb-6 sm:mt-20 mt-16 mb-10 sm:px-4 scrollbar-hide overflow-x-hidden w-full pb-28">
-          {messageState &&
-            usersState &&
-            messageState.messages.map((msg) => (
-              <Chat
-                msg={msg}
-                user={userState!}
-                users={usersState!}
-                key={msg.messageUuid}
-              />
-            ))}
+          {messageState && usersState && (
+            <Chat
+              messages={messageState}
+              user={userState!}
+              users={usersState}
+            />
+          )}
           <div ref={ref}></div>
         </div>
       </div>

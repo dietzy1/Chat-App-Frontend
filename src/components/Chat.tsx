@@ -1,24 +1,70 @@
 /** @format */
 
-import React, { useEffect } from "react";
-import { ChannelType, MessageType, UserType } from "../types/interfaces";
+import { useEffect } from "react";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { Searchbar } from "./footerComponents/Searchbar";
 
 import {
   GetUserResponse,
   GetUsersResponse,
 } from "../api/protos/user/v1/usergateway_service_pb";
-import { Msg } from "../api/protos/message/v1/messagegateway_service_pb";
+import {
+  GetMessagesResponse,
+  Msg,
+} from "../api/protos/message/v1/messagegateway_service_pb";
+
+import Message from "./chatComponents/Message";
 
 //I think how I want this to work is that I am going to have an array of users specific to the chatserver
 //Then im going to have the message history and then it needs to map the useruuid from the message to the user in the array
 //and based on that display the icon
 
-const Chat = ({
+function Chat({
+  messages,
+  user,
+  users,
+}: {
+  messages: GetMessagesResponse;
+  user: GetUserResponse;
+  users: GetUsersResponse;
+}) {
+  //Function that loops through messages and adds the uuid to an array, of messages that are the first message of the day
+
+  function getFirstMessagesOfDay(messages: Msg[]) {
+    let firstMsgs: string[] = [];
+    let currentDate: string | null = null;
+
+    messages.forEach((msg) => {
+      const msgDate = new Date(msg.timestamp).toDateString();
+      if (currentDate !== msgDate) {
+        firstMsgs.push(msg.messageUuid);
+        currentDate = msgDate;
+      }
+    });
+
+    return firstMsgs;
+  }
+  const firstMsgs = getFirstMessagesOfDay(messages.messages);
+
+  return (
+    <div>
+      {messages.messages.map((msg) => (
+        <Message
+          msg={msg}
+          user={user}
+          users={users}
+          key={msg.messageUuid}
+          firstMsg={firstMsgs.includes(msg.messageUuid)}
+        />
+      ))}
+    </div>
+  );
+}
+export default Chat;
+
+const Chat2 = ({
   msg,
   user,
   users,
@@ -57,12 +103,10 @@ const Chat = ({
     console.log("editing: " + editing);
   };
 
-  //I need to find a way to map between the message and the user
-  //Combine the two and then display the icon
-  //const idk = msg.authorUuid;
-  //const idkk = user.uuid;
+  //Potentially I want to add a feature so a new line shows up when its a new date
 
   const [icon, setIcon] = useState("");
+  const [timestamp, setTimestamp] = useState("");
   useEffect(() => {
     //Find a match uuid between the message and the user
     //Then set the icon to the icon of the user
@@ -72,6 +116,42 @@ const Chat = ({
         setIcon(users.users[i].icon?.link!);
         //console.log(user.users[i].icon?.link!);
       }
+    }
+
+    const parts = msg.timestamp.split(/[ :-]+/);
+    const year = parseInt(parts[2]);
+    const month = parseInt(parts[1]) - 1; // months are zero-indexed
+    const day = parseInt(parts[0]);
+    const hour = parseInt(parts[3]);
+    const minute = parseInt(parts[4]);
+
+    const date = new Date(year, month, day, hour, minute);
+    console.log(date);
+
+    const today = new Date();
+    const yesterday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1
+    );
+
+    if (date.toDateString() === today.toDateString()) {
+      setTimestamp(
+        `Today at ${date.toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "numeric",
+        })}`
+      );
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      setTimestamp(
+        `Yesterday at ${date.toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "numeric",
+        })}`
+      );
+    } else {
+      //potentially a bug here
+      setTimestamp(date.toLocaleDateString());
     }
   }, []);
 
@@ -85,7 +165,7 @@ const Chat = ({
               {msg.author}
             </h2>
             <div className=" my-2  text-xs font-mono font-light opacity-50 text-[#A3A6AA]">
-              {msg.timestamp}
+              {timestamp}
             </div>
           </div>
 
@@ -100,23 +180,12 @@ const Chat = ({
               ></img>
             </div>
           </div>
-          {/*  <div className="ml-[14rem] sm:ml-[35rem] font-medium text-xs text-[#A3A6AA] bg-green-500">
-              {msg.timestamp}
-            </div> */}
-          {/* <div className="absolute -bottom-4 left-10 text-xs font-mono font-light opacity-50 text-[#A3A6AA]">
-            {msg.timestamp}
-          </div> */}
+          <div className="border-b mt-10 w-full"></div>
         </div>
-
-        {/*  <div className=" font-medium text-xs my-2 text-[#A3A6AA]">
-            {msg.timestamp}
-          </div> */}
       </div>
     </div>
   );
 };
-
-export default Chat;
 
 const Chat1 = ({
   msg,

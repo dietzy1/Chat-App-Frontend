@@ -9,8 +9,9 @@ import { useState } from "react";
 import { LoginError } from "../types/interfaces";
 
 import { Client } from "../api/Client";
-import { AuthGatewayService } from "../api/protos/auth/v1/authgateway_service_connect";
-import { RegisterRequest } from "../api/protos/auth/v1/authgateway_service_pb";
+import { AccountGatewayService } from "../api/protos/account/v1/accountgateway_service_connect";
+
+import { RegisterAccountRequest } from "../api/protos/account/v1/accountgateway_service_pb";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -25,7 +26,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const [state, dispatch] = useGlobalState();
-  const client = new Client(AuthGatewayService);
+  const client = new Client(AccountGatewayService);
 
   const onsubmitfunc = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ const RegisterPage = () => {
       return;
     }
 
-    const request = new RegisterRequest();
+    const request = new RegisterAccountRequest();
     request.username = username;
     request.password = password;
     const res = await client.fetch(request);
