@@ -12,5 +12,10 @@ export function FormatMessages(msg: string) {
       `<img className="inline-block w-4" src="https://cdn.betterttv.net/emote/${emoji.emote.id}/1x" alt="${emoji.emote.code}" />`
     );
   });
-  return <div dangerouslySetInnerHTML={{ __html: result }} />;
+  return (
+    <div
+      className="flex flex-row flex-wrap"
+      dangerouslySetInnerHTML={{ __html: result }}
+    />
+  );
 }

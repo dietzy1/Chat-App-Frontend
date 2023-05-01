@@ -8,6 +8,10 @@ import DateSeperator from "./DateSeperator";
 import { MessageTimestamp } from "./MessageTimestamp";
 import { FormatMessages } from "./FormatMessage";
 
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { CheckIcon } from "@heroicons/react/24/outline";
+
 function Message({
   msg,
   user,
@@ -37,6 +41,31 @@ function Message({
     MessageTimestamp({ msg, setTimestamp, firstMsg, setFirstMsgTimeStamp });
   }, []);
 
+  const [text, setText] = useState(msg.content);
+  const [editing, setEditing] = useState(false);
+
+  const editMessage = (e: any) => {
+    if (e.key === "Enter" || e.keyCode === 13) {
+      console.log("editing message");
+      e.preventDefault();
+      editingToggle();
+    }
+  };
+  const confirmEditing = () => {
+    console.log("editing message");
+    editingToggle();
+  };
+
+  const revertEditing = () => {
+    setText(msg.content);
+    editingToggle();
+  };
+
+  const editingToggle = () => {
+    setEditing(!editing);
+    console.log("editing: " + editing);
+  };
+
   return (
     <div>
       {firstMsg && (
@@ -44,7 +73,7 @@ function Message({
           <DateSeperator timestamp={firstMsgTimeStamp} />
         </div>
       )}
-      <div className="flex flex-row m-2 justify-start w-full relative mb-10">
+      <div className="flex flex-row m-2 justify-start w-full relative mb-10 group/icon">
         <div className="flex flex-col">
           <div className="flex flex-row heading">
             <h2 className="ml-14 mr-8 text-lg my-0.5 font-sans font-semibold">
@@ -55,8 +84,19 @@ function Message({
             </div>
           </div>
 
-          <div className="inline-block grow-0 pl-8 mx-6 p-3 break-words overflow-x-hidden  bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
-            {FormatMessages(msg.content)}
+          <div className="block break-all pl-8 mx-6 p-3 break-words bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
+            {editing ? (
+              <div
+                contentEditable="true"
+                suppressContentEditableWarning={true}
+                onKeyDown={editMessage}
+              >
+                {FormatMessages(msg.content)}
+              </div>
+            ) : (
+              <div>{FormatMessages(msg.content)}</div>
+            )}
+
             <div className="absolute border border-customOrange bg-blacky top-2 left-0 z-10 rounded-2xl">
               <img
                 className="w-12 h-12  flex-shrink-0 rounded-full border-4 border-blacky z-10"
@@ -66,6 +106,39 @@ function Message({
             </div>
           </div>
         </div>
+        <span
+          onClick={() => editingToggle()}
+          className="my-auto place-self-end border-opacity-30 border rounded-3xl border-spotify4  shadow-md  transition-all duration-100 origin-top scale-0 group-hover/icon:scale-100"
+        >
+          <EllipsisVerticalIcon className="h-8 w-8 rounded-3xl text-white " />
+        </span>
+        {editing ? (
+          <div className="flex-none my-auto">
+            <span className="flex flex-row my-auto">
+              <XMarkIcon
+                onClick={revertEditing}
+                className="h-8 w-8 ml-1 rounded-2xl text-white border-customOrange border "
+              />
+              <CheckIcon
+                onClick={confirmEditing}
+                className="h-8 w-8 ml-1 rounded-2xl text-white border-customOrange border"
+              />
+            </span>
+          </div>
+        ) : (
+          <div className="flex-none my-auto invisible">
+            <span className="flex flex-row my-auto">
+              <XMarkIcon
+                onClick={revertEditing}
+                className="h-8 w-8 ml-1 rounded-2xl text-white border-customOrange border "
+              />
+              <CheckIcon
+                onClick={confirmEditing}
+                className="h-8 w-8 ml-1 rounded-2xl text-white border-customOrange border"
+              />
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
