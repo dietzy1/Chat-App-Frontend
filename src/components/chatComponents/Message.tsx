@@ -5,6 +5,8 @@ import { Msg } from "../../api/protos/message/v1/messagegateway_service_pb";
 import { GetUserResponse } from "../../api/protos/user/v1/usergateway_service_pb";
 import { GetUsersResponse } from "../../api/protos/user/v1/usergateway_service_pb";
 import DateSeperator from "./DateSeperator";
+import { MessageTimestamp } from "./MessageTimestamp";
+import { FormatMessages } from "./FormatMessage";
 
 function Message({
   msg,
@@ -32,52 +34,7 @@ function Message({
       }
     }
 
-    const parts = msg.timestamp.split(/[ :-]+/);
-    const year = parseInt(parts[2]);
-    const month = parseInt(parts[1]) - 1; // months are zero-indexed
-    const day = parseInt(parts[0]);
-    const hour = parseInt(parts[3]);
-    const minute = parseInt(parts[4]);
-
-    const date = new Date(year, month, day, hour, minute);
-    console.log(date);
-
-    const today = new Date();
-    const yesterday = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - 1
-    );
-
-    if (firstMsg) {
-      setFirstMsgTimeStamp(
-        date.toLocaleDateString([], {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      );
-    }
-
-    if (date.toDateString() === today.toDateString()) {
-      setTimestamp(
-        `Today at ${date.toLocaleTimeString([], {
-          hour: "numeric",
-          minute: "numeric",
-        })}`
-      );
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      setTimestamp(
-        `Yesterday at ${date.toLocaleTimeString([], {
-          hour: "numeric",
-          minute: "numeric",
-        })}`
-      );
-    } else {
-      //potentially a bug here
-      setTimestamp(date.toLocaleDateString());
-    }
+    MessageTimestamp({ msg, setTimestamp, firstMsg, setFirstMsgTimeStamp });
   }, []);
 
   return (
@@ -98,9 +55,8 @@ function Message({
             </div>
           </div>
 
-          <div className="block grow-0 pl-8 mx-6 p-3 break-words overflow-x-hidden  bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
-            {msg.content}
-
+          <div className="inline-block grow-0 pl-8 mx-6 p-3 break-words overflow-x-hidden  bg-spotify2   border border-customgray  rounded-2xl shadow-2xl">
+            {FormatMessages(msg.content)}
             <div className="absolute border border-customOrange bg-blacky top-2 left-0 z-10 rounded-2xl">
               <img
                 className="w-12 h-12  flex-shrink-0 rounded-full border-4 border-blacky z-10"
