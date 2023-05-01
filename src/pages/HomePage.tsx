@@ -321,11 +321,11 @@ export function Home({ userState }: { userState: GetUserResponse }) {
         }
       };
     }
-    ref!.current!.scrollIntoView({
+    /* ref!.current!.scrollIntoView({
       behavior: "smooth",
       block: "start",
       inline: "nearest",
-    });
+    }); */
   }, [lastMessage, setMessageState, setActivityState]);
 
   //UseEffect hook that updates the socket url when the chatroom or channel is changed
@@ -367,6 +367,14 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       inline: "nearest",
     });
   }, [messageState]);
+
+  useEffect(() => {
+    ref!.current!.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
+  }, []);
 
   //Function which is called when the socket url is changed - Closes the old socket and opens a new one
 

@@ -24,8 +24,16 @@ const User = ({ user }: { user: GetUserResponse }) => {
 
   const toggleUserInformation = () => {
     console.log("opening user information");
-    setToggle(!toggle);
+
+    //wait 300ms before toggling
+    setTimeout(() => {
+      setToggle(!toggle);
+    }, 50);
   };
+
+  const handleOpenUserSettings = (e: React.MouseEvent) => {};
+
+  const handleOpenAccountSettings = (e: React.MouseEvent) => {};
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault;
@@ -47,32 +55,47 @@ const User = ({ user }: { user: GetUserResponse }) => {
   return (
     <div
       onClick={toggleUserInformation}
-      className="flex flex-row m-1 my-auto rounded-xl py-1  p-3 hover:bg-spotify7"
+      className="flex flex-row m-1 my-auto rounded-xl  py-1 p-3 hover:bg-spotify7"
     >
       {toggle && (
-        <div className="bg-spotify2 rounded-2xl absolute bottom-24 left-2 p-5 flex flex-col shadow-2xl">
+        <div className="bg-spotify2 rounded-2xl absolute border-spotify8 border  bottom-24 left-2 p-5 flex flex-col shadow-2xl">
           <div className="flex flex-row">
             <img
               className="h-20 w-20 rounded-full border border-customOrange p-2"
               src={user.icon?.link}
             />
-            <h2 className="heading">{user.name}</h2>
-            <div>#3321</div>
+            <div className="heading ml-4">
+              <h2 className="text-3xl">{user.name}</h2>
+              <div className="text-xs">#3321</div>
+            </div>
           </div>
 
-          <div className="mx-auto">ChatApp member since: {"yesterday"}</div>
-          <div>{user.description}</div>
+          <div className="w-full mb-2 border-b mt-2"> </div>
 
-          <div className="flex flex-row">
-            <div className="bg-spotify6 w-40 border border-spotify4 rounded-lg text-center p-1 m-1">
+          <div className="bg-spotify3 p-4 rounded-xl mb-2 mt-2">
+            <div className="text-xs font-extrabold">ChatApp member since</div>
+            <div className="text-sm text-spotify5 mb-4">{user.joinDate}</div>
+
+            <div className="text-xs font-extrabold">User description </div>
+            <div className="text-sm text-spotify5 mb-2">{user.description}</div>
+          </div>
+
+          <div className="flex flex-row heading border-b border-spotify4 pb-2">
+            <h2
+              onClick={handleOpenUserSettings}
+              className="bg-spotify6 w-36 border text-sm border-spotify4 rounded-lg text-center p-1 m-1"
+            >
               Manage user
-            </div>
-            <div className="bg-spotify6 w-40 border border-spotify4 rounded-lg text-center p-1 m-1">
+            </h2>
+            <h2
+              onClick={handleOpenAccountSettings}
+              className="bg-spotify6 w-36 border text-sm border-spotify4 rounded-lg text-center p-1 m-1"
+            >
               Manage account
-            </div>
+            </h2>
             <h2
               onClick={handleLogout}
-              className="bg-spotify6 w-40 border border-spotify4 rounded-lg text-center p-1 m-1 heading"
+              className="bg-spotify6 w-36 text-sm border border-spotify4 rounded-lg text-center p-1 m-1"
             >
               Logout
             </h2>

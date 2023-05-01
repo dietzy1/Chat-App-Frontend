@@ -1043,28 +1043,7 @@ export const staticEmojis = [
     total: 67706,
     id: "98d2010d9e5aa5bde3893ecfb0f82c8cb9734eb1aaedc0f74562b18a69d0e7b1g5b22356166383462396537363661663633646234336266366239222c34365d",
   },
-  {
-    emote: {
-      id: "5ea831f074046462f768097a",
-      code: "KEKW",
-      imageType: "png",
-      animated: false,
-      createdAt: "2020-04-28T13:38:56.960Z",
-      updatedAt: "2023-01-13T04:56:09.261Z",
-      global: false,
-      live: true,
-      sharing: true,
-      approvalStatus: "AUTO_APPROVED",
-      user: {
-        id: "5c38b275baa7ba09c9cfa3ef",
-        name: "adlertv",
-        displayName: "AdlerTV",
-        providerId: "32437716",
-      },
-    },
-    total: 66879,
-    id: "97499812f61d3e27cfa0d67c13f1573a20a240928d414ef491a4c812de2ab4f0g5b22356561383331663037343034363436326637363830393761222c34375d",
-  },
+
   {
     emote: {
       id: "5b444de56b9160327d12534a",
