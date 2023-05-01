@@ -1,7 +1,11 @@
 /** @format */
 import { useState, useEffect } from "react";
 
-import { Msg } from "../../api/protos/message/v1/messagegateway_service_pb";
+import {
+  EditMessageRequest,
+  EditMessageResponse,
+  Msg,
+} from "../../api/protos/message/v1/messagegateway_service_pb";
 import { GetUserResponse } from "../../api/protos/user/v1/usergateway_service_pb";
 import { GetUsersResponse } from "../../api/protos/user/v1/usergateway_service_pb";
 import DateSeperator from "./DateSeperator";
@@ -11,6 +15,8 @@ import { FormatMessages } from "./FormatMessage";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import { Client } from "../../api/Client";
+import { MessageGatewayService } from "../../api/protos/message/v1/messagegateway_service_connect";
 
 function Message({
   msg,
@@ -23,6 +29,32 @@ function Message({
   users: GetUsersResponse;
   firstMsg: boolean;
 }) {
+  const sendEdited = (msg: Msg) => {
+    const messageClient = new Client(MessageGatewayService);
+    (async function () {
+      const req = new EditMessageRequest();
+      req.authorUuid = msg.authorUuid;
+      req.content = text;
+      req.messageUuid = msg.messageUuid;
+      req.timestamp = msg.timestamp;
+      req.channelUuid = msg.channelUuid;
+      req.chatRoomUuid = msg.chatRoomUuid;
+      req.author = msg.author;
+
+      console.log(req);
+
+      const response = (await messageClient.fetch(req)) as
+        | EditMessageResponse
+        | undefined;
+      if (response !== undefined) {
+        console.log("Messages received!");
+        //Set the msg equal to the response
+      } else {
+        console.log("Messages not received!");
+      }
+    })();
+  };
+
   const [timestamp, setTimestamp] = useState("");
   const [firstMsgTimeStamp, setFirstMsgTimeStamp] = useState("");
   const [icon, setIcon] = useState("");
@@ -48,12 +80,15 @@ function Message({
     if (e.key === "Enter" || e.keyCode === 13) {
       console.log("editing message");
       e.preventDefault();
-      editingToggle();
+
+      confirmEditing();
     }
   };
   const confirmEditing = () => {
     console.log("editing message");
     editingToggle();
+
+    sendEdited(msg);
   };
 
   const revertEditing = () => {
@@ -90,6 +125,7 @@ function Message({
                 contentEditable="true"
                 suppressContentEditableWarning={true}
                 onKeyDown={editMessage}
+                onKeyUp={(e) => setText(e.currentTarget.textContent!)}
               >
                 {FormatMessages(msg.content)}
               </div>
