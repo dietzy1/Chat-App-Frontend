@@ -459,6 +459,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       <CreateChatroomModal
         open={portals.openCreateChatroom}
         onClose={() => closeModal("openCreateChatroom")}
+        user={userState!}
       />
       <AccountModal
         open={portals.openAccount}

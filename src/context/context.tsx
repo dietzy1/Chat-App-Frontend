@@ -5,10 +5,12 @@ import { createContext, useContext } from "react";
 
 export const defaultglobalState = {
   user: false,
+  id: "",
 };
 
 export interface defaultGlobalStateType {
   user: boolean; //Logged in or not
+  id: string; //User id
 }
 
 export const GlobalStateContext = createContext(defaultglobalState);
