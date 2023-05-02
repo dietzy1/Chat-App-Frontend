@@ -16,12 +16,18 @@ function Chatroombar({
   setChatroom,
 
   setChannel,
+
+  openModal,
+  closeModal,
 }: {
   chatroomsState: GetRoomsResponse;
 
   setChatroom: React.Dispatch<React.SetStateAction<string>>;
 
   setChannel: React.Dispatch<React.SetStateAction<string>>;
+
+  openModal: any;
+  closeModal: any;
 }) {
   return (
     <div className="bg-spotify8 flex flex-col fixed left-0">
@@ -76,7 +82,7 @@ function Chatroombar({
             />
           ))}
           {/*Component for adding chatservers*/}
-          <CreateChatroom />
+          <CreateChatroom openModal={openModal} closeModal={closeModal} />
         </div>
 
         <div className="sm:w-full hidden sm:flex flex-col shrink bg-spotify3  pt-[3rem] mt-0.5 drop-shadow-2xl shadow-inner opacity-95 border-gray-900">

@@ -15,8 +15,17 @@ import { Client } from "../../api/Client";
 import { AuthGatewayService } from "../../api/protos/auth/v1/authgateway_service_connect";
 import { useNavigate } from "react-router-dom";
 import { useGlobalState } from "../../context/context";
+import { CloseModal, OpenModal } from "../../hooks/useModalState";
 
-const User = ({ user }: { user: GetUserResponse }) => {
+const User = ({
+  user,
+  openModal,
+  closeModal,
+}: {
+  user: GetUserResponse;
+  openModal: OpenModal;
+  closeModal: CloseModal;
+}) => {
   const [toggle, setToggle] = React.useState(false);
   const [state, dispatch] = useGlobalState();
 
@@ -31,9 +40,17 @@ const User = ({ user }: { user: GetUserResponse }) => {
     }, 50);
   };
 
-  const handleOpenUserSettings = (e: React.MouseEvent) => {};
+  const handleOpenUserSettings = (e: React.MouseEvent) => {
+    e.preventDefault;
 
-  const handleOpenAccountSettings = (e: React.MouseEvent) => {};
+    openModal("openUser");
+  };
+
+  const handleOpenAccountSettings = (e: React.MouseEvent) => {
+    e.preventDefault;
+
+    openModal("openAccount");
+  };
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault;

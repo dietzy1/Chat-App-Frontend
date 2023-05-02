@@ -1,18 +1,19 @@
 /** @format */
 import { PlusIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import Hover from "./Hover";
-function CreateChatroom() {
+import { CloseModal, OpenModal } from "../../hooks/useModalState";
+function CreateChatroom({
+  openModal,
+  closeModal,
+}: {
+  openModal: OpenModal;
+  closeModal: CloseModal;
+}) {
   //I need to add some onclick function here
 
   const handleOnClick = () => {
     console.log("Clicked");
-
-    /*    const client = new Client(ChatroomGatewayService);
-  
-      const req = new CreateRoomRequest();
-      req.name = "Default Server";
-      req.ownerUuid = "d542a0e0-48db-42f8-a1bb-0b0615821145";
-      client.fetch(req); */
+    openModal("openCreateChatroom");
   };
 
   return (

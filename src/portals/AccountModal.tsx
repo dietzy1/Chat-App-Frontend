@@ -6,7 +6,7 @@ import { ChangeEvent, useState } from "react";
 
 //Should be able to change profile picture, username, password, and delete accounts
 
-const Account = ({
+const AccountModal = ({
   open,
   onClose,
 }: {
@@ -112,4 +112,4 @@ const Account = ({
   );
 };
 
-export default Account;
+export default AccountModal;
