@@ -90,6 +90,7 @@ function Chatroombar({
             <Channel
               channelState={chatroomsState.rooms[0]}
               setChannel={setChannel}
+              openModal={openModal}
             />
           </div>
         </div>

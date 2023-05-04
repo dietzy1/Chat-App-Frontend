@@ -58,6 +58,7 @@ import { useAuthentication } from "../hooks/useAuthentication";
 import AccountModal from "../portals/AccountModal";
 import UserModal from "../portals/UserModal";
 import CreateChatroomModal from "../portals/CreateChatroomModal";
+import CreateChannelModal from "../portals/CreateChannelModal";
 
 export function HomePage() {
   const authClient = new Client(AuthGatewayService);
@@ -461,6 +462,13 @@ export function Home({ userState }: { userState: GetUserResponse }) {
         onClose={() => closeModal("openCreateChatroom")}
         user={userState!}
       />
+      <CreateChannelModal
+        open={portals.openCreateChannel}
+        onClose={() => closeModal("openCreateChannel")}
+        user={userState!}
+        chatroom={chatroom}
+      />
+
       <AccountModal
         open={portals.openAccount}
         onClose={() => closeModal("openAccount")}

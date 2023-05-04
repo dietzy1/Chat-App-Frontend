@@ -3,6 +3,7 @@
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { HashtagIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { OpenModal } from "../../hooks/useModalState";
 
 import React from "react";
 import {
@@ -13,14 +14,18 @@ import {
 const Channel = ({
   channelState,
   setChannel,
+  openModal,
 }: {
   channelState: GetRoomResponse;
   setChannel: React.Dispatch<React.SetStateAction<string>>;
+  openModal: OpenModal;
 }) => {
   //Onclick function for creating new channel
 
   const handleModal = () => {
     console.log("clicked");
+
+    openModal("openCreateChannel");
   };
 
   //Based on which ever server is clicked I need to send the index of the array to the server
