@@ -15,16 +15,14 @@ import { Client } from "../../api/Client";
 import { AuthGatewayService } from "../../api/protos/auth/v1/authgateway_service_connect";
 import { useNavigate } from "react-router-dom";
 import { useGlobalState } from "../../context/context";
-import { CloseModal, OpenModal } from "../../hooks/useModalState";
+import { OpenModal } from "../../hooks/useModalState";
 
 const User = ({
   user,
   openModal,
-  closeModal,
 }: {
   user: GetUserResponse;
   openModal: OpenModal;
-  closeModal: CloseModal;
 }) => {
   const [toggle, setToggle] = React.useState(false);
   const [state, dispatch] = useGlobalState();

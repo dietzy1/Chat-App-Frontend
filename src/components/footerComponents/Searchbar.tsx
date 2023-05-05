@@ -10,6 +10,7 @@ import { Marshal } from "../../websocket/Serialize";
 import { MessageType, UserType } from "../../types/interfaces";
 import { GetUserResponse } from "../../api/protos/user/v1/usergateway_service_pb";
 import { ReadyStateState } from "react-use-websocket/dist/lib/types";
+import Emotebar from "./Emotebar";
 
 export const Searchbar = ({
   handleClickSendMessage,
@@ -44,6 +45,13 @@ export const Searchbar = ({
     // I might need to pass in the websocket send Function here
   };
 
+  const [toggle, setToggle] = React.useState<boolean>(false);
+
+  const toggleEmotebar = () => {
+    console.log("toggle");
+    setToggle(!toggle);
+  };
+
   return (
     <div>
       <footer className="text-darky flex flex-row justify-center mx-auto w-full">
@@ -57,10 +65,22 @@ export const Searchbar = ({
             type="text"
             placeholder="Aa"
             onChange={(e) => setInput(e.target.value)}
+            value={input}
             /*  onSubmit={() => sendInput} */
           />
+          <div className="flex flex-row">
+            <FaceSmileIcon
+              onClick={toggleEmotebar}
+              className="w-8 h-8 text-white"
+            />
 
-          <FaceSmileIcon className="w-8 h-8 text-white" />
+            <Emotebar
+              toggle={toggle}
+              setToggle={setToggle}
+              input={input}
+              setInput={setInput}
+            />
+          </div>
           <button
             className=" px-0 py-0 rounded-full  outline-none border-none focus:border-none"
             type="submit"
