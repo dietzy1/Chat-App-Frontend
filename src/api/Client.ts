@@ -42,9 +42,6 @@ export class Client {
           method: "POST",
           credentials: "include",
           body: json,
-          /* headers: {
-            "Content-Type": "application/json",
-          }, */
         }
       );
       if (!res.ok) {

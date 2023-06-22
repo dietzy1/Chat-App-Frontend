@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useRef, useState } from "react";
 
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
@@ -11,6 +11,12 @@ import { MessageType, UserType } from "../../types/interfaces";
 import { GetUserResponse } from "../../api/protos/user/v1/usergateway_service_pb";
 import { ReadyStateState } from "react-use-websocket/dist/lib/types";
 import Emotebar from "./Emotebar";
+import { FormatMessages } from "../chatComponents/FormatMessage";
+
+interface SearchResult {
+  name: string;
+  image: string;
+}
 
 export const Searchbar = ({
   handleClickSendMessage,
@@ -52,6 +58,8 @@ export const Searchbar = ({
     setToggle(!toggle);
   };
 
+  //unwrap the jsx element
+
   return (
     <div>
       <footer className="text-darky flex flex-row justify-center mx-auto w-full">
@@ -60,14 +68,16 @@ export const Searchbar = ({
           onSubmit={sendInput}
         >
           <input
-            /* onChange={(e) => setQuery(e.target.value)} */
             className="appearance-none bg-transparent border-none w-full text-white leading-tight focus:outline-none rounded-md text-sm mx-6"
             type="text"
             placeholder="Aa"
             onChange={(e) => setInput(e.target.value)}
             value={input}
-            /*  onSubmit={() => sendInput} */
           />
+          {/*  <div className="appearance-none bg-transparent border-none w-full text-white leading-tight focus:outline-none rounded-md text-sm mx-6">
+            {FormatMessages(input)}
+          </div> */}
+
           <div className="flex flex-row">
             <FaceSmileIcon
               onClick={toggleEmotebar}

@@ -14,16 +14,21 @@ import {
 const Chatroom = ({
   chatroomState,
   setChatroom,
+  setChannel,
 }: {
   chatroomState: GetRoomResponse;
   setChatroom: React.Dispatch<React.SetStateAction<string>>;
+  setChannel: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+
   return (
     <div
       className="flex justify-center relative group shadow-inner mt-4"
       onClick={() => {
         setChatroom(chatroomState?.chatroomUuid!);
+        setChannel(chatroomState?.channel[0].channelUuid!);
         console.log("Swapped to chatroom: " + chatroomState?.chatroomUuid!);
+        console.log("Swapped to channel: " + chatroomState?.channel[0].channelUuid!)
       }}
     >
       <div className="w-[60%] h-[60%]">

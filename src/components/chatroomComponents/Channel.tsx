@@ -29,7 +29,6 @@ const Channel = ({
   };
 
   //Based on which ever server is clicked I need to send the index of the array to the server
-  channelState.channel;
   return (
     <div className="shadow-inner">
       <div className="border-b mx-4 border-spotify5">
@@ -56,9 +55,12 @@ const Channel = ({
         {channelState &&
           channelState.channel.map((c) => (
             <MapChannel
+            
+
               channelState={c}
               setChannel={setChannel}
               key={c.channelUuid}
+              
             />
           ))}
       </div>
@@ -69,7 +71,7 @@ const Channel = ({
 export default Channel;
 
 const MapChannel = ({
-  channelState,
+ channelState,
   setChannel,
 }: {
   channelState: GetChannelResponse;

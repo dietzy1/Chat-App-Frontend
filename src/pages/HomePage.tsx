@@ -282,6 +282,8 @@ export function Home({ userState }: { userState: GetUserResponse }) {
     }
   }, [lastMessage, setMessageState, setActivityState]);
 
+//The issue is that I need to reset the channel aswell when you change chatroom
+
   //UseEffect hook that updates the socket url when the chatroom or channel is changed
   useEffect(() => {
     //Change the socket URL to the new chatroom and channel
@@ -419,6 +421,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
         {chatroomState && (
           <Chatroombar
             chatroomsState={chatroomState}
+            channelState={channel}
             setChatroom={setChatroom}
             setChannel={setChannel}
             //FIXME:

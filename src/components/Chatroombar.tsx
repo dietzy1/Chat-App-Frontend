@@ -12,6 +12,8 @@ import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
 
 function Chatroombar({
   chatroomsState,
+  channelState,
+
 
   setChatroom,
 
@@ -21,6 +23,7 @@ function Chatroombar({
   closeModal,
 }: {
   chatroomsState: GetRoomsResponse;
+  channelState: string;
 
   setChatroom: React.Dispatch<React.SetStateAction<string>>;
 
@@ -29,6 +32,21 @@ function Chatroombar({
   openModal: any;
   closeModal: any;
 }) {
+
+  
+
+//I need a function will try to match the chatroomState and channel UUID
+function findChannel(chatroomState: GetRoomsResponse, channelState: string): GetRoomResponse {
+  for (let i = 0; i < chatroomState.rooms.length; i++) {
+    for (let j = 0; j < chatroomState.rooms[i].channel.length; j++) {
+      if (chatroomState.rooms[i].channel[j].channelUuid === channelState) {
+        return chatroomState.rooms[i];
+      }
+    }
+  }
+  return chatroomState.rooms[0];
+}
+
   return (
     <div className="bg-spotify8 flex flex-col fixed left-0">
       <svg
@@ -78,6 +96,7 @@ function Chatroombar({
             <Chatroom
               chatroomState={chatroom}
               setChatroom={setChatroom}
+              setChannel={setChannel}
               key={chatroom.chatroomUuid}
             />
           ))}
@@ -88,7 +107,7 @@ function Chatroombar({
         <div className="sm:w-full hidden sm:flex flex-col shrink bg-spotify3  pt-[3rem] mt-0.5 drop-shadow-2xl shadow-inner opacity-95 border-gray-900">
           <div className="h-[92vh] flex flex-col overflow-y-scroll scrollbar-hide">
             <Channel
-              channelState={chatroomsState.rooms[0]}
+              channelState={findChannel( chatroomsState, channelState)}
               setChannel={setChannel}
               openModal={openModal}
             />
@@ -101,6 +120,8 @@ function Chatroombar({
   );
 }
 export default Chatroombar;
+
+//I need to create some sort of selector the issue is that current 
 
 {
   /*    <div className="w-[20rem] flex flex-row">
