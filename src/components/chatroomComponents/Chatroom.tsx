@@ -12,18 +12,22 @@ import {
 } from "../../api/protos/chatroom/v1/chatroomgateway_service_pb";
 
 const Chatroom = ({
+  chatroom,
   chatroomState,
   setChatroom,
   setChannel,
 }: {
+  chatroom: string;
   chatroomState: GetRoomResponse;
   setChatroom: React.Dispatch<React.SetStateAction<string>>;
   setChannel: React.Dispatch<React.SetStateAction<string>>;
 }) => {
 
+  //perform check if chatroom is equal to
+ 
   return (
-    <div
-      className="flex justify-center relative group shadow-inner mt-4"
+    <div className={`flex justify-center relative group shadow-inner mt-4 ${(chatroomState.chatroomUuid === chatroom) ? "border-l-2 border-customOrange" : ""}`}
+  
       onClick={() => {
         setChatroom(chatroomState?.chatroomUuid!);
         setChannel(chatroomState?.channel[0].channelUuid!);

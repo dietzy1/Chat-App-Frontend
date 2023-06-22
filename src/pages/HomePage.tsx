@@ -66,6 +66,7 @@ export function HomePage() {
 
   //useEffect hook to handle authentication and redirecting to login page if not authenticated
   useAuthentication(authClient);
+  const [state, dispatch] = useGlobalState();
 
   //State containing user ID
   const [userState, setUserState] = useState<GetUserResponse | undefined>(
@@ -80,6 +81,7 @@ export function HomePage() {
         .split("; ")
         .find((row) => row.startsWith("uuid_token="))
         ?.split("=")[1]!;
+        dispatch({id: req.userUuid});
       const res = (await userClient.fetch(req)) as GetUserResponse | undefined;
       if (typeof res !== "undefined") {
         console.log("User information received!");
@@ -89,6 +91,8 @@ export function HomePage() {
       }
     })();
   }, []);
+
+
 
   //If we fail to load user information, return an empty div
   //TODO: Implement a loading screen
@@ -102,9 +106,9 @@ export function HomePage() {
 export default HomePage;
 
 export function Home({ userState }: { userState: GetUserResponse }) {
-  const [state, dispatch] = useGlobalState();
+ 
   const [open, setOpen] = React.useState(false);
-
+  
   //Searchbar logic and state
   const ref = useRef<HTMLInputElement>(null);
 
@@ -207,6 +211,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
 
   //Use effect hook that loads in the users in the chatroom
   useEffect(() => {
+    
     (async function () {
       if (typeof chatroom === "undefined") {
         return;
@@ -214,6 +219,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       if (typeof chatroomState === "undefined") {
         return;
       }
+      console.log("Requesting users...")
 
       let userUuids: string[] = [];
 
@@ -234,12 +240,12 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       if (response !== undefined) {
         console.log("Users received!");
         setUsersState(response);
-        console.log(response);
+        console.log("This is the response to users request: ",response);
       } else {
         console.log("Users not received!");
       }
     })();
-  }, [setChatRoomState, chatroomState]);
+  }, [setChatRoomState, chatroomState, chatroom]);
 
   //Start listening for new messages
   useEffect(() => {
@@ -282,7 +288,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
     }
   }, [lastMessage, setMessageState, setActivityState]);
 
-//The issue is that I need to reset the channel aswell when you change chatroom
+
 
   //UseEffect hook that updates the socket url when the chatroom or channel is changed
   useEffect(() => {
@@ -380,6 +386,11 @@ export function Home({ userState }: { userState: GetUserResponse }) {
     [readyState, sendMessage]
   );
 
+  useEffect(() => {
+    console.log("ACTIVITY STATE IS THE FOLLOWING: ", activityState)
+    console.log("USERS STATE IS THE FOLLOWING: ", usersState)
+  }, [usersState]);
+
   //FIXME: FIXME: FIXME: FIXME:
   const [portals, openModal, closeModal] = useModalState({
     openUser: false,
@@ -420,6 +431,7 @@ export function Home({ userState }: { userState: GetUserResponse }) {
       <div className="w-[32rem] z-20">
         {chatroomState && (
           <Chatroombar
+          chatroom={chatroom!}
             chatroomsState={chatroomState}
             channelState={channel}
             setChatroom={setChatroom}
@@ -483,3 +495,4 @@ export function Home({ userState }: { userState: GetUserResponse }) {
     </div>
   );
 }
+

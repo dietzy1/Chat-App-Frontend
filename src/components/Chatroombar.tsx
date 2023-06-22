@@ -11,17 +11,15 @@ import CreateChatroom from "./chatroomComponents/CreateChatroom";
 import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
 
 function Chatroombar({
+  chatroom,
   chatroomsState,
   channelState,
-
-
   setChatroom,
-
   setChannel,
-
   openModal,
   closeModal,
 }: {
+  chatroom: string
   chatroomsState: GetRoomsResponse;
   channelState: string;
 
@@ -33,7 +31,6 @@ function Chatroombar({
   closeModal: any;
 }) {
 
-  
 
 //I need a function will try to match the chatroomState and channel UUID
 function findChannel(chatroomState: GetRoomsResponse, channelState: string): GetRoomResponse {
@@ -92,12 +89,13 @@ function findChannel(chatroomState: GetRoomsResponse, channelState: string): Get
             {/* <ChatBubbleBottomCenterIcon className="h-12 w-12 text-spotify7 border p-1 rounded-2xl border-spotify7" /> */}
           </div>
 
-          {chatroomsState.rooms.map((chatroom) => (
+          {chatroomsState.rooms.map((chatroomMap) => (
             <Chatroom
-              chatroomState={chatroom}
+            chatroom={chatroom}
+              chatroomState={chatroomMap}
               setChatroom={setChatroom}
               setChannel={setChannel}
-              key={chatroom.chatroomUuid}
+              key={chatroomMap.chatroomUuid}
             />
           ))}
           {/*Component for adding chatservers*/}

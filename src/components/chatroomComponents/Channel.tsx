@@ -4,12 +4,15 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { HashtagIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { OpenModal } from "../../hooks/useModalState";
+import {Cog6ToothIcon} from "@heroicons/react/24/outline";
+import { useGlobalState } from "../../context/context";
 
 import React from "react";
 import {
   GetRoomResponse,
   GetChannelResponse,
 } from "../../api/protos/chatroom/v1/chatroomgateway_service_pb";
+import { channel } from "diagnostics_channel";
 
 const Channel = ({
   channelState,
@@ -22,17 +25,24 @@ const Channel = ({
 }) => {
   //Onclick function for creating new channel
 
+
+
+
+  
   const handleModal = () => {
     console.log("clicked");
 
     openModal("openCreateChannel");
   };
 
+  const [state, dispatch] = useGlobalState();
+
   //Based on which ever server is clicked I need to send the index of the array to the server
   return (
     <div className="shadow-inner">
-      <div className="border-b mx-4 border-spotify5">
+      <div className="border-b border-spotify5 flex flex-row">
         <div className="mx-auto mb-4 text-l ">{channelState.name}</div>
+        {(state.id === channelState.ownerUuid!) && <Cog6ToothIcon className="h-5 w-5 text-white mr-2 mb-4 my-auto" /> }
       </div>
 
       <div className="flex flex-row mt-8">
@@ -55,12 +65,9 @@ const Channel = ({
         {channelState &&
           channelState.channel.map((c) => (
             <MapChannel
-            
-
               channelState={c}
               setChannel={setChannel}
               key={c.channelUuid}
-              
             />
           ))}
       </div>

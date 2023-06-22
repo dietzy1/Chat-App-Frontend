@@ -2,7 +2,7 @@
 
 import { GetUserResponse } from "../api/protos/user/v1/usergateway_service_pb";
 import { CloseModal, OpenModal } from "../hooks/useModalState";
-import Icons from "./footerComponents/Icons";
+import Logos from "./footerComponents/Logos";
 
 import Searchbar from "./footerComponents/Searchbar";
 import User from "./footerComponents/User";
@@ -32,8 +32,9 @@ function Footer({
           channeluuid={channeluuid}
           chatroomuuid={chatroomuuid}
         />
-        <Icons />
+        <Logos />
       </footer>
+    
     </div>
   );
 }
