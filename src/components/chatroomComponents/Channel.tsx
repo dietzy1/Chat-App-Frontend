@@ -4,7 +4,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { HashtagIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { OpenModal } from "../../hooks/useModalState";
-import {Cog6ToothIcon} from "@heroicons/react/24/outline";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useGlobalState } from "../../context/context";
 
 import React from "react";
@@ -12,23 +12,20 @@ import {
   GetRoomResponse,
   GetChannelResponse,
 } from "../../api/protos/chatroom/v1/chatroomgateway_service_pb";
-import { channel } from "diagnostics_channel";
 
 const Channel = ({
+  channelUuid,
   channelState,
   setChannel,
   openModal,
 }: {
+  channelUuid: string;
   channelState: GetRoomResponse;
   setChannel: React.Dispatch<React.SetStateAction<string>>;
   openModal: OpenModal;
 }) => {
   //Onclick function for creating new channel
 
-
-
-
-  
   const handleModal = () => {
     console.log("clicked");
 
@@ -42,7 +39,9 @@ const Channel = ({
     <div className="shadow-inner">
       <div className="border-b border-spotify5 flex flex-row">
         <div className="mx-auto mb-4 text-l ">{channelState.name}</div>
-        {(state.id === channelState.ownerUuid!) && <Cog6ToothIcon className="h-5 w-5 text-white mr-2 mb-4 my-auto" /> }
+        {state.id === channelState.ownerUuid! && (
+          <Cog6ToothIcon className="h-5 w-5 text-white mr-2 mb-4 my-auto" />
+        )}
       </div>
 
       <div className="flex flex-row mt-8">
@@ -65,6 +64,7 @@ const Channel = ({
         {channelState &&
           channelState.channel.map((c) => (
             <MapChannel
+              channelUuid={channelUuid}
               channelState={c}
               setChannel={setChannel}
               key={c.channelUuid}
@@ -78,15 +78,19 @@ const Channel = ({
 export default Channel;
 
 const MapChannel = ({
- channelState,
+  channelUuid,
+  channelState,
   setChannel,
 }: {
+  channelUuid: string;
   channelState: GetChannelResponse;
   setChannel: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   return (
     <div
-      className="flex flex-row mx-1 rounded p-2 items-center hover:bg-white hover:text-blacky text-lg"
+      className={`flex flex-row mx-1 rounded p-2 items-center hover:bg-white hover:text-blacky text-lg ${
+        channelState.channelUuid === channelUuid ? "bg-spotify7 text-white" : ""
+      }`}
       onClick={() => {
         setChannel(channelState?.channelUuid!);
         console.log("Swapped to channel: " + channelState?.channelUuid!);

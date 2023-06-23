@@ -12,6 +12,7 @@ import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
 
 function Chatroombar({
   chatroom,
+  channelUuid,
   chatroomsState,
   channelState,
   setChatroom,
@@ -19,7 +20,8 @@ function Chatroombar({
   openModal,
   closeModal,
 }: {
-  chatroom: string
+  chatroom: string;
+  channelUuid: string;
   chatroomsState: GetRoomsResponse;
   channelState: string;
 
@@ -30,19 +32,20 @@ function Chatroombar({
   openModal: any;
   closeModal: any;
 }) {
-
-
-//I need a function will try to match the chatroomState and channel UUID
-function findChannel(chatroomState: GetRoomsResponse, channelState: string): GetRoomResponse {
-  for (let i = 0; i < chatroomState.rooms.length; i++) {
-    for (let j = 0; j < chatroomState.rooms[i].channel.length; j++) {
-      if (chatroomState.rooms[i].channel[j].channelUuid === channelState) {
-        return chatroomState.rooms[i];
+  //I need a function will try to match the chatroomState and channel UUID
+  function findChannel(
+    chatroomState: GetRoomsResponse,
+    channelState: string
+  ): GetRoomResponse {
+    for (let i = 0; i < chatroomState.rooms.length; i++) {
+      for (let j = 0; j < chatroomState.rooms[i].channel.length; j++) {
+        if (chatroomState.rooms[i].channel[j].channelUuid === channelState) {
+          return chatroomState.rooms[i];
+        }
       }
     }
+    return chatroomState.rooms[0];
   }
-  return chatroomState.rooms[0];
-}
 
   return (
     <div className="bg-spotify8 flex flex-col fixed left-0">
@@ -91,7 +94,7 @@ function findChannel(chatroomState: GetRoomsResponse, channelState: string): Get
 
           {chatroomsState.rooms.map((chatroomMap) => (
             <Chatroom
-            chatroom={chatroom}
+              chatroom={chatroom}
               chatroomState={chatroomMap}
               setChatroom={setChatroom}
               setChannel={setChannel}
@@ -105,7 +108,8 @@ function findChannel(chatroomState: GetRoomsResponse, channelState: string): Get
         <div className="sm:w-full hidden sm:flex flex-col shrink bg-spotify3  pt-[3rem] mt-0.5 drop-shadow-2xl shadow-inner opacity-95 border-gray-900">
           <div className="h-[92vh] flex flex-col overflow-y-scroll scrollbar-hide">
             <Channel
-              channelState={findChannel( chatroomsState, channelState)}
+              channelUuid={channelUuid}
+              channelState={findChannel(chatroomsState, channelState)}
               setChannel={setChannel}
               openModal={openModal}
             />
@@ -119,7 +123,7 @@ function findChannel(chatroomState: GetRoomsResponse, channelState: string): Get
 }
 export default Chatroombar;
 
-//I need to create some sort of selector the issue is that current 
+//I need to create some sort of selector the issue is that current
 
 {
   /*    <div className="w-[20rem] flex flex-row">
